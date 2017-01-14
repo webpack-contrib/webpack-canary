@@ -1,32 +1,12 @@
-var path = require('path');
 var _ = require('underscore');
 var Promise = require("bluebird");
-var glob = require('glob');
 var chalk = require('chalk');
 var argv = require('yargs').argv;
 var logger = require('./lib/logger');
 var generateInstallObjectFor = require('./lib/generate-install-object');
 var installWebpackAndLoader = require('./lib/install-webpack-and-loader');
+var getLoaderExamples = require('./lib/get-loader-examples');
 var runLoaderWithWebpack = Promise.promisify(require('./lib/run-loader-with-webpack'));
-
-var getLoaderExamples = function(webpackSetup, loaderSetup, callback) {
-  var webpackConfigFilename = 'webpack.config.js';
-  var examplesDirectoryName = 'examples';
-  var loaderExamplesPath = path.join(loaderSetup.toLocalName(), examplesDirectoryName);
-  var globOptions = {
-    cwd: path.join('node_modules', loaderExamplesPath)
-  };
-  glob('**/' + webpackConfigFilename, globOptions, function (err, webpackConfigFilePaths) {
-    var loaderExamples = _.map(webpackConfigFilePaths, function(webpackConfigFilePath) {
-      var examplesName = path.dirname(webpackConfigFilePath);
-      return {
-        name: (examplesName === '.') ? undefined : examplesName,
-        config: require(path.join(loaderExamplesPath, webpackConfigFilePath))
-      }
-    });
-    callback(null, loaderExamples);
-  });
-};
 
 var loaderExampleFailure = function(err) {
   logger.error(err);
