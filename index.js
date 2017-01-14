@@ -12,7 +12,7 @@ var runLoaderWithWebpack = Promise.promisify(require('./lib/run-loader-with-webp
 var getLoaderExamples = function(webpackSetup, loaderSetup, callback) {
   var webpackConfigFilename = 'webpack.config.js';
   var examplesDirectoryName = 'examples';
-  var loaderExamplesPath = path.join(loaderSetup.name, examplesDirectoryName);
+  var loaderExamplesPath = path.join(loaderSetup.toLocalName(), examplesDirectoryName);
   var globOptions = {
     cwd: path.join('node_modules', loaderExamplesPath)
   };
