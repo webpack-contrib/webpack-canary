@@ -1,32 +1,41 @@
 var path = require('path');
 var _ = require('underscore');
+var Promise = require("bluebird");
+var glob = require('glob');
 var chalk = require('chalk');
 var argv = require('yargs').argv;
 var logger = require('./lib/logger');
 var generateInstallObjectFor = require('./lib/generate-install-object');
 var installWebpackAndLoader = require('./lib/install-webpack-and-loader');
-var runLoaderWithWebpack = require('./lib/run-loader-with-webpack');
+var runLoaderWithWebpack = Promise.promisify(require('./lib/run-loader-with-webpack'));
 
-var getLoaderExampleConfig = function(webpackSetup, loaderSetup) {
-  // TODO: Think about different examples for different webpack versions
-
-  var loaderExampleConfig
-  try {
-    loaderExampleConfig = require(path.join(loaderSetup.name, 'examples', 'webpack.config.js'));
-  } catch(e) {
-    // no action
-  }
-
-  return loaderExampleConfig;
+var getLoaderExamples = function(webpackSetup, loaderSetup, callback) {
+  var webpackConfigFilename = 'webpack.config.js';
+  var examplesDirectoryName = 'examples';
+  var loaderExamplesPath = path.join(loaderSetup.name, examplesDirectoryName);
+  var globOptions = {
+    cwd: path.join('node_modules', loaderExamplesPath)
+  };
+  glob('**/' + webpackConfigFilename, globOptions, function (err, webpackConfigFilePaths) {
+    var loaderExamples = _.map(webpackConfigFilePaths, function(webpackConfigFilePath) {
+      var examplesName = path.dirname(webpackConfigFilePath);
+      return {
+        name: (examplesName === '.') ? undefined : examplesName,
+        config: require(path.join(loaderExamplesPath, webpackConfigFilePath))
+      }
+    });
+    callback(null, loaderExamples);
+  });
 };
 
-var compileComplete = function(err) {
-  if (err) {
-    logger.error(err);
-    return;
-  }
+var loaderExampleFailure = function(err) {
+  logger.error(err);
+  process.exit(1);
+};
 
-  logger.success('Example compilation was successful');
+var loaderExamplesSuccess = function() {
+  logger.success('All examples passed');
+  process.exit()
 };
 
 var webpackSetup = generateInstallObjectFor.webpack(argv.webpack);
@@ -48,14 +57,24 @@ installWebpackAndLoader(webpackSetup, loaderSetup, function(err) {
     return;
   }
 
-  // TODO: Support multiple examples
-  logger.log('Retrieving ' + chalk.bold(loaderSetup.name) + ' example ...');
-  var loaderExampleConfig = getLoaderExampleConfig(webpackSetup, loaderSetup);
-  if (_.isUndefined(loaderExampleConfig)) {
-    logger.error('Unable to get loader example config');
-    return;
-  }
+  logger.log('Retrieving ' + chalk.bold(loaderSetup.name) + ' examples ...');
+  getLoaderExamples(webpackSetup, loaderSetup, function(err, loaderExamples) {
+    if (err) {
+      logger.error(err);
+      return;
+    }
 
-  logger.log('Running ' + chalk.bold(loaderSetup) + ' with ' + chalk.bold(webpackSetup) + ' ...');
-  runLoaderWithWebpack(loaderExampleConfig, compileComplete);
+    if (_.isEmpty(loaderExamples)) {
+      logger.error('Unable to get any loader examples');
+      return;
+    }
+
+    logger.log('Running ' + chalk.bold(loaderSetup) + ' with ' + chalk.bold(webpackSetup) + ' ...');
+
+    Promise.each(loaderExamples, function(loaderExample, index) {
+      var exampleName = loaderExample.name || 'example ' + (index + 1);
+      logger.log(' - ' + loaderSetup.name + ' ' + chalk.bold(exampleName) + ' ...');
+      return runLoaderWithWebpack(loaderExample.config);
+    }).then(loaderExamplesSuccess).catch(loaderExampleFailure);
+  });
 });
