@@ -19,7 +19,7 @@ var loaderExamplesSuccess = function() {
 };
 
 var webpackSetup = generateInstallObjectFor.webpack(argv.webpack);
-if (_.isNull(webpackSetup)) {
+if (_.isNull(webpackSetup) || webpackSetup.name !== 'webpack') {
   logger.error('Webpack version is not valid', argv.webpack);
   return;
 }
