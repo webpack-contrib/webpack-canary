@@ -10,19 +10,29 @@ cache:
   directories:
     - node_modules
 
-before_script:
-  - npm run lint
 script:
-  - npm test
+  - if [ "$SQUAWK" = "true" ]; then npm run squawk; fi
+  - if [ "$SQUAWK" = "false" ]; then npm run lint && npm test; fi
 
 matrix:
   include:
     - os: linux
       node_js: "4"
+      env: SQUAWK=false
     - os: linux
       node_js: "6"
+      env: SQUAWK=false
     - os: linux
       node_js: "7"
+      env: SQUAWK=false
     - os: osx
       node_js: "6"
+      env: SQUAWK=false
+    - os: linux
+      node_js: "7"
+      env: SQUAWK=true
+  allow_failures:
+    - os: linux
+      node_js: "7"
+      env: SQUAWK=true
   fast_finish: true

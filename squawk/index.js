@@ -26,7 +26,7 @@ export default function() {
   Promise.each(runList, function({ webpack, dependency }) {
     logger.info(`Running ${chalk.bold(webpack)} and ${chalk.bold(dependency)} ...`);
     return squawk(webpack, dependency, options).catch(function(err) {
-      logger.error(err.message.split('\n')[0]);
+      logger.error(err);
     });
   })
   .then(function() {
