@@ -32,3 +32,4 @@ A dependency must include an `examples` directory which contains an example setu
  - [ ] Flag to control log level verbosity
  - [x] Programatic interface (split CLI flags from app)
  - [ ] Script to run for multiple dependencies / versions with summary
+ - [ ] Linting
