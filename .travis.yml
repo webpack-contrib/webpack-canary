@@ -1,0 +1,27 @@
+sudo: false
+language: node_js
+
+branches:
+  only:
+    - master
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+matrix:
+  include:
+    - os: linux
+      node_js: "4"
+    - os: linux
+      node_js: "6"
+    - os: linux
+      node_js: "7"
+    - os: osx
+      node_js: "4"
+    - os: osx
+      node_js: "6"
+    - os: osx
+      node_js: "7"
+  fast_finish: true
