@@ -24,9 +24,5 @@ matrix:
     - os: linux
       node_js: "7"
     - os: osx
-      node_js: "4"
-    - os: osx
       node_js: "6"
-    - os: osx
-      node_js: "7"
   fast_finish: true
