@@ -1,16 +1,16 @@
 require("babel-register");
-var logger = require('./lib/logger').default;
 
-var fatalError = function(err) {
-  logger.error(err);
-  process.exit(1);
-};
-
+var getLogger = require('./lib/logger').default;
 var argv = require('yargs').argv;
-require('./lib').default(argv.webpack, argv.dependency, function(err) {
+var logLevel = argv.logLevel || 'info';
+var logger = getLogger(logLevel);
+var options = { logLevel: logLevel };
+
+require('./lib').default(argv.webpack, argv.dependency, options, function(err) {
   if (err) {
-    fatalError(err);
-  } else {
-    logger.success('All examples passed');
+    logger.error(err);
+    process.exit(1);
   }
+
+  logger.success('All examples passed');
 });

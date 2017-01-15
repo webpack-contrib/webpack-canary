@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha lib --recursive --compilers js:babel-core/register --check-leaks",
-    "lint": "eslint lib"
+    "lint": "eslint lib",
+    "squawk": "node ./squawk.js"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "ISC",
