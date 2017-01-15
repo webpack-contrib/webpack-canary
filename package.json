@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha lib --recursive --compilers js:babel-core/register --check-leaks"
+    "test": "mocha lib --recursive --compilers js:babel-core/register --check-leaks",
+    "lint": "eslint lib"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "ISC",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.13.1",
     "mocha": "^3.2.0",
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.7",
