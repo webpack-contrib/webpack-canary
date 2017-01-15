@@ -1,2 +1,4 @@
 require("babel-register");
-require('./lib').default();
+
+var argv = require('yargs').argv;
+require('./lib').default(argv.webpack, argv.dependency);

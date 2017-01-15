@@ -28,7 +28,7 @@ A dependency must include an `examples` directory which contains an example setu
 ## To do
 
  - [x] ES6
- - [ ] Tests
+ - [x] Tests
  - [ ] Flag to control log level verbosity
- - [ ] Programatic interface (split CLI flags from app)
+ - [x] Programatic interface (split CLI flags from app)
  - [ ] Script to run for multiple dependencies / versions with summary
