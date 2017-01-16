@@ -31,5 +31,11 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Tests
  - [x] Flag to control log level verbosity
  - [x] Programatic interface (split CLI flags from app)
- - [x] Script to run for multiple dependencies / versions with summary
+ - [x] Script to run for multiple dependencies
  - [x] Linting
+ - [x] Show summary successes / failure after running squawk
+ - [ ] Update summary to use progress bar and collapse table if all success
+ - [ ] Change logLevel to loglevel
+ - [ ] Update readme
+ - [ ] Split webpack 1 configs and 2 configs in examples
+ - [ ] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
