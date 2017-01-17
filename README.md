@@ -1,17 +1,27 @@
 # Webpack Canary
 
-Run dependency examples against webpack versions to detect incompatibilities
+Run dependency examples against webpack versions to detect incompatibilities.
 
 ## Usage
+
+### Squawk
+
+Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack versions are stored in `webpack-versions.json` and dependency versions are stored in `dependency-versions.json`.
+
+Use `npm run squawk` to run all dependencies against all versions of webpack, and generate a report with successes and failures. This command does not take any flags.
+
+### CLI Interface
+
+To run a specific dependency version against a specific version of webpack, use the canary CLI interface
 
 ```
 node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
 ```
 
- - `--webpack` can contain a version or path to remote repository
- - `--dependency` can contain a dependency name (with or without version) or path to remote repository
+ - `--webpack` can be a version or path to remote repository
+ - `--dependency` can be a dependency name (with or without version) or path to remote repository
 
-__Example:__
+#### Example
 
 ```
 # Published versions in registry
@@ -34,9 +44,10 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Script to run for multiple dependencies
  - [x] Linting
  - [x] Show summary successes / failure after running squawk
- - [ ] Update summary to use progress bar and collapse table if all success
  - [x] Change logLevel to loglevel
- - [ ] Update readme
  - [x] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
+ - [x] Update summary to use progress bar and collapse table if all success
+ - [x] Update readme
+ - [x] Output recreation command when squawk failure
  - [ ] Split webpack 1 configs and 2 configs in examples
  - [ ] Add ability to run more than just loaders / plugins

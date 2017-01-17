@@ -1,7 +1,8 @@
 import Promise from 'bluebird';
+import Gauge from 'gauge';
 import _ from 'underscore';
 import chalk from 'chalk';
-import Table from 'cli-table';
+import Table from 'cli-table2';
 import getLogger from '../lib/logger';
 import webpackVersions from './webpack-versions';
 import dependencyVersions from './dependency-versions';
@@ -65,41 +66,70 @@ const completeTask = function(results) {
 
 const generateSummary = function(results) {
   _.each(results, function(webpackResults, webpackVersion) {
-    console.log(chalk.bold.underline(`Webpack ${webpackVersion}`));
+    logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
       head: ['Status', 'Name', 'Error'],
-      style: { head: ['bold'] }
+      style: { head: ['bold'] },
+      wordWrap: true
     });
+
+    if (_.every(webpackResults, (result) => result.success)) {
+      logger.success(`No issues detected running ${_.keys(webpackResults).length} dependencies`);
+      logger.newline();
+      return;
+    }
 
     _.each(webpackResults, function({ success, error }, dependencyVersion) {
       const dependencyStatus = success ? chalk.green('Passed') : chalk.red('Failed');
       const dependencyError = error ? chalk.red(convertErrorToString(error)) : '';
+      const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+
       table.push(
-        [dependencyStatus, dependencyVersion, dependencyError]
+        [dependencyStatus, dependencyVersion, dependencyError],
+        [{ colSpan: 3, content: command }],
       );
     });
 
-    console.log(`${table}\n`);
+    logger.info(`${table}`);
+    logger.newline();
   });
 
   completeTask(results);
 };
 
 export default function() {
+  const gauge = new Gauge();
+  const updateGauge = (webpack, value) => gauge.show(`${webpack}`, value / runList.length);
+  gauge.show('webpack', 0);
+
   const runList = createRunList();
   let results = {};
+  let plusing;
+  let previousWebpack;
 
-  Promise.each(runList, function({ webpack, dependency }) {
-    logger.info(`Running ${chalk.bold(webpack)} and ${chalk.bold(dependency)} ...`);
+  Promise.each(runList, function({ webpack, dependency }, index) {
+    const webpackText = `${webpack}`;
+    clearInterval(plusing);
+    updateGauge(webpack, index);
+    if (previousWebpack !== webpackText) gauge.pulse('');
+    plusing = setInterval(() => gauge.pulse(`${dependency}`), 75);
+    previousWebpack = webpackText;
+
     return squawk(webpack, dependency, options).then(function() {
+      updateGauge(webpack, (index + 1));
       results = updateResultsForSuccess({ webpack, dependency }, results);
     }).catch(function(err) {
+      updateGauge(webpack, (index + 1));
       results = updateResultsForFailure({ webpack, dependency }, err, results);
     });
   }).then(function() {
-    generateSummary(results);
+    setTimeout(function() {
+      gauge.hide();
+      generateSummary(results);
+    }, 500);
   }).catch(function(err) {
+    gauge.hide();
     logger.error('Error ocurred running all combinations', err);
   });
 }
