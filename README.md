@@ -38,4 +38,5 @@ A dependency must include an `examples` directory which contains an example setu
  - [ ] Change logLevel to loglevel
  - [ ] Update readme
  - [ ] Split webpack 1 configs and 2 configs in examples
- - [ ] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
+ - [x] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
+ - [ ] Add ability to run more than just loaders / plugins
