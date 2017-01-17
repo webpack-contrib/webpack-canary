@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import Gauge from 'gauge';
 import _ from 'underscore';
 import chalk from 'chalk';
-import Table from 'cli-table';
+import Table from 'cli-table2';
 import getLogger from '../lib/logger';
 import webpackVersions from './webpack-versions';
 import dependencyVersions from './dependency-versions';
@@ -70,7 +70,8 @@ const generateSummary = function(results) {
 
     const table = new Table({
       head: ['Status', 'Name', 'Error'],
-      style: { head: ['bold'] }
+      style: { head: ['bold'] },
+      wordWrap: true
     });
 
     if (_.every(webpackResults, (result) => result.success)) {
@@ -82,8 +83,11 @@ const generateSummary = function(results) {
     _.each(webpackResults, function({ success, error }, dependencyVersion) {
       const dependencyStatus = success ? chalk.green('Passed') : chalk.red('Failed');
       const dependencyError = error ? chalk.red(convertErrorToString(error)) : '';
+      const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+
       table.push(
-        [dependencyStatus, dependencyVersion, dependencyError]
+        [dependencyStatus, dependencyVersion, dependencyError],
+        [{ colSpan: 3, content: command }],
       );
     });
 
