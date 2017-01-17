@@ -8,7 +8,7 @@ var options = { loglevel: loglevel };
 
 require('./lib').default(argv.webpack, argv.dependency, options, function(err) {
   if (err) {
-    logger.error(err);
+    logger.error('Errors have occurred running examples');
     process.exit(1);
   }
 

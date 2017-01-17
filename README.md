@@ -49,5 +49,6 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Update summary to use progress bar and collapse table if all success
  - [x] Update readme
  - [x] Output recreation command when squawk failure
- - [ ] Split webpack 1 configs and 2 configs in examples
+ - [x] Support multiple examples and output in table
+ - [ ] Split webpack 1 configs and 2 configs in examples - support non-suported examples
  - [ ] Add ability to run more than just loaders / plugins
