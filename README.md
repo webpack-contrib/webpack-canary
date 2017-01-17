@@ -35,8 +35,8 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Linting
  - [x] Show summary successes / failure after running squawk
  - [ ] Update summary to use progress bar and collapse table if all success
- - [ ] Change logLevel to loglevel
+ - [x] Change logLevel to loglevel
  - [ ] Update readme
- - [ ] Split webpack 1 configs and 2 configs in examples
  - [x] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
+ - [ ] Split webpack 1 configs and 2 configs in examples
  - [ ] Add ability to run more than just loaders / plugins

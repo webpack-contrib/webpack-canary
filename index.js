@@ -2,9 +2,9 @@ require("babel-register");
 
 var getLogger = require('./lib/logger').default;
 var argv = require('yargs').argv;
-var logLevel = argv.logLevel || 'info';
-var logger = getLogger(logLevel);
-var options = { logLevel: logLevel };
+var loglevel = argv.loglevel || 'info';
+var logger = getLogger(loglevel);
+var options = { loglevel: loglevel };
 
 require('./lib').default(argv.webpack, argv.dependency, options, function(err) {
   if (err) {
