@@ -8,7 +8,7 @@ import dependencyVersions from './dependency-versions';
 import canary from '../lib';
 
 const squawk = Promise.promisify(canary);
-const options = { logLevel: 'silent' };
+const options = { loglevel: 'silent' };
 const logger = getLogger();
 const createRunList = function() {
   const nestedRunList = _.map(webpackVersions, function(webpackVersion) {
