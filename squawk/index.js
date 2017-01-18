@@ -23,11 +23,12 @@ const createRunList = function() {
   return _.flatten(nestedRunList);
 };
 
-const updateResults = function({ webpack, dependency }, results, update) {
+const updateResults = function({ webpack, dependency, examples }, results, update) {
   results[webpack] = results[webpack] || {};
   results[webpack][dependency] = _.extend({
     webpack,
-    dependency
+    dependency,
+    examples
   }, update);
   return results;
 };
@@ -47,9 +48,9 @@ const updateResultsForFailure = function(versions, err, results) {
 
 const convertErrorToString = function(err) {
   if (_.isArray(err)) {
-    return _.flatten(err).join('\n');
+    return '\n' + _.flatten(err).join('\n');
   }
-  return err;
+  return `\n${err}`;
 };
 
 const completeTask = function(results) {
@@ -69,7 +70,7 @@ const generateSummary = function(results) {
     logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
-      head: ['Status', 'Name', 'Error'],
+      head: ['Name', 'Example', 'Status'],
       style: { head: ['bold'] },
       wordWrap: true
     });
@@ -80,15 +81,32 @@ const generateSummary = function(results) {
       return;
     }
 
-    _.each(webpackResults, function({ success, error }, dependencyVersion) {
-      const dependencyStatus = success ? chalk.green('Passed') : chalk.red('Failed');
-      const dependencyError = error ? chalk.red(convertErrorToString(error)) : '';
+    _.each(webpackResults, function({ success, examples, error: dependencyError }, dependencyVersion) {
       const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+      const commandRow = [{ colSpan: 3, content: command }];
+      const passedMessage = chalk.green('Passed');
+      const failedMessage = chalk.red('Failed');
 
-      table.push(
-        [dependencyStatus, dependencyVersion, dependencyError],
-        [{ colSpan: 3, content: command }],
-      );
+      if (dependencyError) {
+        const outputDependencyError = convertErrorToString(dependencyError);
+        table.push(
+          [dependencyVersion, '-', `${failedMessage}${outputDependencyError}`],
+          commandRow
+        );
+        return;
+      }
+
+      _.each(examples, function({ name, error: exampleError }, index) {
+        const exampleStatus = exampleError ? failedMessage : passedMessage;
+        const outputExampleError = exampleError ? convertErrorToString(exampleError) : '';
+        const isFirst = (index === 0);
+        const nameColumn = isFirst ? [{rowSpan: examples.length, content: dependencyVersion}] : [];
+        table.push(
+          nameColumn.concat([name, `${exampleStatus}${outputExampleError}`])
+        );
+      });
+
+      table.push(commandRow);
     });
 
     logger.info(`${table}`);
@@ -116,12 +134,15 @@ export default function() {
     plusing = setInterval(() => gauge.pulse(`${dependency}`), 75);
     previousWebpack = webpackText;
 
-    return squawk(webpack, dependency, options).then(function() {
+    return squawk(webpack, dependency, options).then(function(examples) {
       updateGauge(webpack, (index + 1));
-      results = updateResultsForSuccess({ webpack, dependency }, results);
+      results = updateResultsForSuccess({ webpack, dependency, examples }, results);
     }).catch(function(err) {
       updateGauge(webpack, (index + 1));
-      results = updateResultsForFailure({ webpack, dependency }, err, results);
+      const isExamplesError = _.has(err, 'examples');
+      const examples = isExamplesError ? err.examples : undefined;
+      const dependencyError = isExamplesError ? undefined : err;
+      results = updateResultsForFailure({ webpack, dependency, examples }, dependencyError, results);
     });
   }).then(function() {
     setTimeout(function() {
