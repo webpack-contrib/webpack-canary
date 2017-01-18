@@ -4,15 +4,14 @@ import _ from 'underscore';
 import chalk from 'chalk';
 import Table from 'cli-table2';
 import getLogger from '../lib/logger';
-import webpackVersions from './webpack-versions';
-import dependencyVersions from './dependency-versions';
+import versionMapping from './webpack-to-dependency-versions';
 import canary from '../lib';
 
 const squawk = Promise.promisify(canary);
 const options = { loglevel: 'silent' };
 const logger = getLogger();
 const createRunList = function() {
-  const nestedRunList = _.map(webpackVersions, function(webpackVersion) {
+  const nestedRunList = _.map(versionMapping, function(dependencyVersions, webpackVersion) {
     return _.map(dependencyVersions, function(dependencyVersion) {
       return {
         webpack: webpackVersion,

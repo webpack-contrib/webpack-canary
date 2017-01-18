@@ -1,0 +1,14 @@
+{
+  "v1.14.0": [
+    "raw-loader@latest",
+    "json-loader@latest"
+  ],
+  "v2.2.0-rc.5": [
+    "raw-loader@latest",
+    "json-loader@latest"
+  ],
+  "webpack/webpack#master": [
+    "raw-loader@latest",
+    "json-loader@latest"
+  ]
+}
