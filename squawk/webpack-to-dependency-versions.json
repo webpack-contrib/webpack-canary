@@ -1,16 +1,11 @@
 {
   "v1.14.0": [
-    "raw-loader@latest",
-    "json-loader@latest"
+    "https://github.com/webpack/webpack-dev-server/archive/v1.16.3.tar.gz"
   ],
-  "v2.2.0": [
-    "raw-loader@latest",
-    "json-loader@latest",
-    "https://github.com/webpack/webpack-dev-server/archive/v2.2.0.tar.gz"
+  "v2.2.1": [
+    "https://github.com/webpack/webpack-dev-server/archive/v2.3.0.tar.gz"
   ],
   "webpack/webpack#master": [
-    "raw-loader@latest",
-    "json-loader@latest",
     "https://github.com/webpack/webpack-dev-server/archive/master.tar.gz"
   ]
 }
