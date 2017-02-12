@@ -9,6 +9,7 @@ var options = { loglevel: loglevel };
 require('./lib').default(argv.webpack, argv.dependency, options, function(err) {
   if (err) {
     logger.error('Errors have occurred running examples');
+    logger.error(err);
     process.exit(1);
   }
 
