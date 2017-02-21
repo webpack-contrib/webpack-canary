@@ -1,8 +1,20 @@
-# Webpack Canary
+[![npm][npm]][npm-url]
+[![deps][deps]][deps-url]
+[![test][test]][test-url]
+[![coverage][cover]][cover-url]
+[![chat][chat]][chat-url]
 
-Run dependency examples against webpack versions to detect incompatibilities.
+<div align="center">
+  <!-- replace with accurate logo e.g from https://worldvectorlogo.com/ -->
+  <a href="https://github.com/webpack/webpack">
+    <img width="200" height="200" vspace="" hspace="25"
+      src="https://cdn.rawgit.com/webpack/media/e7485eb2/logo/icon.svg">
+  </a>
+  <h1>Webpack Canary</h1>
+  <p>Run dependency examples against webpack versions to detect incompatibilities.<p>
+</div>
 
-## Usage
+<h2 align="center">Usage</h2>
 
 ### Squawk
 
@@ -31,11 +43,11 @@ node index.js --webpack=2.2 --dependency=raw-loader
 node index.js --webpack=webpack/webpack#master --dependency=https://github.com/alistairjcbrown/raw-loader/
 ```
 
-## Compatibility
+<h2 align="center">Compatibility</h2>
 
 A dependency must include an `examples` directory which contains an example setup with corresponding webpack config. This config is run with the installed webpack version to confirm compatibility.
 
-## To do
+<h2 align="center">To Do</h2>
 
  - [x] ES6
  - [x] Tests
@@ -52,3 +64,58 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Support multiple examples and output in table
  - [ ] Split webpack 1 configs and 2 configs in examples - support non-suported examples
  - [ ] Add ability to run more than just loaders / plugins
+
+<h2 align="center">Maintainers</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars3.githubusercontent.com/u/635903?v=3&s=150">
+        </br>
+        <a href="https://github.com/alistairjcbrown">Alistair Brown</a>
+      </td>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars3.githubusercontent.com/u/166921?v=3&s=150">
+        </br>
+        <a href="https://github.com/bebraw">Juho Vepsäläinen</a>
+      </td>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars2.githubusercontent.com/u/8420490?v=3&s=150">
+        </br>
+        <a href="https://github.com/d3viant0ne">Joshua Wiens</a>
+      </td>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars3.githubusercontent.com/u/533616?v=3&s=150">
+        </br>
+        <a href="https://github.com/SpaceK33z">Kees Kluskens</a>
+      </td>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars3.githubusercontent.com/u/3408176?v=3&s=150">
+        </br>
+        <a href="https://github.com/TheLarkInn">Sean Larkin</a>
+      </td>
+    </tr>
+  <tbody>
+</table>
+
+
+[npm]: https://img.shields.io/npm/v/webpack-canary.svg
+[npm-url]: https://npmjs.com/package/webpack-canary
+
+[deps]: https://david-dm.org/webpack-contrib/webpack-canary.svg
+[deps-url]: https://david-dm.org/webpack-contrib/webpack-canary
+
+[chat]: https://img.shields.io/badge/gitter-webpack%2Fwebpack-brightgreen.svg
+[chat-url]: https://gitter.im/webpack/webpack
+
+[test]: http://img.shields.io/travis/webpack-contrib/webpack-canary.svg
+[test-url]: https://travis-ci.org/webpack-contrib/webpack-canary
+
+[cover]: https://codecov.io/gh/webpack-contrib/webpack-canary/branch/master/graph/badge.svg
+[cover-url]: https://codecov.io/gh/webpack-contrib/webpack-canary
