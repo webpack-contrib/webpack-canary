@@ -16,6 +16,8 @@
 
 <h2 align="center">Usage</h2>
 
+HEDDO CLA
+
 ### Squawk
 
 Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack versions are stored in `webpack-versions.json` and dependency versions are stored in `dependency-versions.json`.
