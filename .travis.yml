@@ -28,8 +28,14 @@ matrix:
     - os: linux
       node_js: "7"
       env: SQUAWK=true
+    - os: linux
+      node_js: "8"
+      env: SQUAWK=true
   allow_failures:
     - os: linux
       node_js: "7"
+      env: SQUAWK=true
+    - os: linux
+      node_js: "8"
       env: SQUAWK=true
   fast_finish: true
