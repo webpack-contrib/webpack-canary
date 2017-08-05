@@ -26,6 +26,9 @@ matrix:
       node_js: "7"
       env: SQUAWK=false
     - os: linux
+      node_js: "8"
+      env: SQUAWK=false
+    - os: linux
       node_js: "7"
       env: SQUAWK=true
     - os: linux
