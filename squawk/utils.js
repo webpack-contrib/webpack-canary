@@ -45,7 +45,7 @@ const updateResults = function({ webpack, dependency, examples }, results, updat
  *
  * @param {Object} versions - Used versions
  * @param {Object} results - Results that need to be updated
- * @returns {Object} Updated re4sults
+ * @returns {Object} Updated results
  */
 export const updateResultsForSuccess = function(versions, results) {
   return updateResults(versions, results, {
@@ -59,7 +59,7 @@ export const updateResultsForSuccess = function(versions, results) {
  * @param {Object} versions - Used versions
  * @param {Error} err - Failure reason
  * @param {Object} results - Results that need to be updated
- * @returns {Object} Updated re4sults
+ * @returns {Object} Updated results
  */
 export const updateResultsForFailure = function(versions, err, results) {
   return updateResults(versions, results, {
