@@ -4,8 +4,8 @@
   "description": "Canary tooling for checking webpack dependencies against specific webpack versions",
   "main": "index.js",
   "scripts": {
-    "test": "mocha lib --recursive --compilers js:babel-core/register --check-leaks",
-    "watch": "mocha lib --watch --recursive --compilers js:babel-core/register --check-leaks",
+    "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
+    "watch": "mocha \"./lib/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
     "lint": "eslint lib",
     "squawk": "node ./squawk.js"
   },
