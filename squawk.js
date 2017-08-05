@@ -1,2 +1,2 @@
-require("babel-register");
-require('./squawk/index.js').default();
+require('babel-register');
+require('./squawk/index').default();
