@@ -6,6 +6,12 @@ import { createRunList, generateSummary, logger, updateResultsForFailure, update
 
 const options = { loglevel: 'silent' };
 
+/**
+ * Run the squawk script
+ *
+ * @export
+ * @return {Promise} Promise indicating the process success
+ */
 export default async function() {
   const runList = createRunList();
   let results = {};

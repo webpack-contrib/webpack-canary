@@ -7,6 +7,11 @@ import versionMapping from './webpack-to-dependency-versions';
 
 export const logger = getLogger();
 
+/**
+ * Creates a list of webpack/dependency combinations
+ *
+ * @returns {Array} List of webpack/dependency combinations
+ */
 export const createRunList = function() {
   const nestedRunList = map(versionMapping, function(dependencyVersions, webpackVersion) {
     return map(dependencyVersions, (dependencyVersion) => ({
@@ -17,6 +22,14 @@ export const createRunList = function() {
   return flatten(nestedRunList);
 };
 
+/**
+ * Update the test results
+ *
+ * @param {Object} test - Test info
+ * @param {Object} results - Test results
+ * @param {Object} update - Updated data
+ * @returns {Object} Test results
+ */
 const updateResults = function({ webpack, dependency, examples }, results, update) {
   results[webpack] = results[webpack] || {};
   results[webpack][dependency] = extend({
@@ -27,12 +40,27 @@ const updateResults = function({ webpack, dependency, examples }, results, updat
   return results;
 };
 
+/**
+ * Add success results
+ *
+ * @param {Object} versions - Used versions
+ * @param {Object} results - Results that need to be updated
+ * @returns {Object} Updated re4sults
+ */
 export const updateResultsForSuccess = function(versions, results) {
   return updateResults(versions, results, {
     success: true
   });
 }
 
+/**
+ * Add failure results
+ *
+ * @param {Object} versions - Used versions
+ * @param {Error} err - Failure reason
+ * @param {Object} results - Results that need to be updated
+ * @returns {Object} Updated re4sults
+ */
 export const updateResultsForFailure = function(versions, err, results) {
   return updateResults(versions, results, {
     error: err,
@@ -40,6 +68,12 @@ export const updateResultsForFailure = function(versions, err, results) {
   });
 }
 
+/**
+ * Prepare an error for output
+ *
+ * @param {Array|Error} err - Error to output
+ * @returns {String} Prettified error
+ */
 const convertErrorToString = function(err) {
   if (isArray(err)) {
     return '\n' + flatten(err).join('\n');
@@ -47,6 +81,12 @@ const convertErrorToString = function(err) {
   return `\n${err}`;
 };
 
+/**
+ * Output the task completion and exit
+ *
+ * @param {Object} results - Task results
+ * @return {void}
+ */
 const completeTask = function(results) {
   const resultsList = flatten(values(results).map(values));
 
@@ -59,6 +99,12 @@ const completeTask = function(results) {
   process.exit();
 };
 
+/**
+ * Generate the test summary
+ *
+ * @param {Object} results - Test results
+ * @return {void}
+ */
 export const generateSummary = function(results) {
   each(results, function(webpackResults, webpackVersion) {
     logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
