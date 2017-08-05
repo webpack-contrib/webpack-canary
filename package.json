@@ -1,7 +1,7 @@
 {
   "name": "webpack-canary",
   "version": "1.0.0",
-  "description": "",
+  "description": "Canary tooling for checking webpack dependencies against specific webpack versions",
   "main": "index.js",
   "scripts": {
     "test": "mocha lib --recursive --compilers js:babel-core/register --check-leaks",
