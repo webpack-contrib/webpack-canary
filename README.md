@@ -65,7 +65,6 @@ A dependency must include an `examples` directory which contains an example setu
  - [ ] Split webpack 1 configs and 2 configs in examples - support non-suported examples
  - [ ] Add ability to run more than just loaders / plugins
  - [x] Move from callbacks to promises
- - [ ] Remove Babel once Node 4 is no longer supported
  - [ ] Don't use npm cli for installing of webpack & dependency
  - [ ] Install webpack & dependency somewhere else (not `node_modules` - avoid potential colisions) *
  - [ ] Add more folders as example targets (e.g. `demo`)
