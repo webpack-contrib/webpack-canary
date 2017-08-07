@@ -47,35 +47,6 @@ node index.js --webpack=webpack/webpack#master --dependency=https://github.com/a
 
 A dependency must include an `examples` directory which contains an example setup with corresponding webpack config. This config is run with the installed webpack version to confirm compatibility.
 
-<h2 align="center">To Do</h2>
-
- - [x] ES6
- - [x] Tests
- - [x] Flag to control log level verbosity
- - [x] Programatic interface (split CLI flags from app)
- - [x] Script to run for multiple dependencies
- - [x] Linting
- - [x] Show summary successes / failure after running squawk
- - [x] Change logLevel to loglevel
- - [x] Investigate why failing on webpack 1 causes failure in webpack 2 (cache?)
- - [x] Update summary to use progress bar and collapse table if all success
- - [x] Update readme
- - [x] Output recreation command when squawk failure
- - [x] Support multiple examples and output in table
- - [ ] Split webpack 1 configs and 2 configs in examples - support non-suported examples
- - [ ] Add ability to run more than just loaders / plugins
- - [x] Move from callbacks to promises
- - [ ] Don't use npm cli for installing of webpack & dependency
- - [ ] Install webpack & dependency somewhere else (not `node_modules` - avoid potential colisions)
- - [ ] Add more folders as example targets (e.g. `demo`)
- - [ ] Allow running dependency tests with the specific webpack version *
- - [x] Refactor `InstallObject`
- - [ ] Add `--progress` option with a progress bar
- - [ ] Add `--versions` to change the versions file path for `squawk`
- - [ ] Expose `canary` and `squawk` as binaries
-
- `*` - Not sure if possible
-
 <h2 align="center">Maintainers</h2>
 
 <table>
