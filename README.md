@@ -64,6 +64,17 @@ A dependency must include an `examples` directory which contains an example setu
  - [x] Support multiple examples and output in table
  - [ ] Split webpack 1 configs and 2 configs in examples - support non-suported examples
  - [ ] Add ability to run more than just loaders / plugins
+ - [x] Move from callbacks to promises
+ - [ ] Don't use npm cli for installing of webpack & dependency
+ - [ ] Install webpack & dependency somewhere else (not `node_modules` - avoid potential colisions)
+ - [ ] Add more folders as example targets (e.g. `demo`)
+ - [ ] Allow running dependency tests with the specific webpack version *
+ - [x] Refactor `InstallObject`
+ - [ ] Add `--progress` option with a progress bar
+ - [ ] Add `--versions` to change the versions file path for `squawk`
+ - [ ] Expose `canary` and `squawk` as binaries
+
+ `*` - Not sure if possible
 
 <h2 align="center">Maintainers</h2>
 
