@@ -45,7 +45,7 @@ node index.js --webpack=webpack/webpack#master --dependency=https://github.com/a
 
 <h2 align="center">Compatibility</h2>
 
-A dependency must include an `examples` directory which contains an example setup with corresponding webpack config. This config is run with the installed webpack version to confirm compatibility.
+A dependency must include an `example` or `examples` directory which contains an example setup with corresponding webpack config (ie. must have a `webpack.config.js` file). This config is run with the installed webpack version to confirm compatibility. If a custom command needs to be run, there should be an accompanying `README.md` file which contains the command in a codeblock.
 
 <h2 align="center">Maintainers</h2>
 
