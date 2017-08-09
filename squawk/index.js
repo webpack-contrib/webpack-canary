@@ -13,6 +13,7 @@ const options = { loglevel: 'silent' };
  * @return {Promise} Promise indicating the process success
  */
 export default async function() {
+  const startTime = new Date().getTime();
   const runList = createRunList();
   let results = {};
   let pulsing;
@@ -48,7 +49,7 @@ export default async function() {
 
     setTimeout(function() {
       gauge.hide();
-      generateSummary(results);
+      generateSummary(results, startTime);
     }, 500);
   } catch (err) {
     gauge.hide();

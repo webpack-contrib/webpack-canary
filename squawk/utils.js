@@ -103,9 +103,10 @@ const completeTask = function(results) {
  * Generate the test summary
  *
  * @param {Object} results - Test results
+ * @param {Number} startTime - Timestamp of the task start
  * @return {void}
  */
-export const generateSummary = function(results) {
+export const generateSummary = function(results, startTime) {
   each(results, function(webpackResults, webpackVersion) {
     logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
@@ -152,6 +153,10 @@ export const generateSummary = function(results) {
     logger.info(`${table}`);
     logger.newline();
   });
+
+  const duration = new Date().getTime() - startTime;
+  logger.info(`Run completed in ${duration}ms`)
+  logger.newline();
 
   completeTask(results);
 }
