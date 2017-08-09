@@ -18,7 +18,7 @@
 
 ### Squawk
 
-Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack versions are stored in `webpack-versions.json` and dependency versions are stored in `dependency-versions.json`.
+Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack and dependency versions are stored in `webpack-to-dependency-versions.json`.
 
 Use `npm run squawk` to run all dependencies against all versions of webpack, and generate a report with successes and failures. This command does not take any flags.
 
@@ -47,7 +47,23 @@ node index.js --webpack=webpack/webpack#master --dependency=https://github.com/a
 
 <h2 align="center">Compatibility</h2>
 
-A dependency must include an `examples` directory which contains an example setup with corresponding webpack config. This config is run with the installed webpack version to confirm compatibility.
+A dependency must include an `example` or `examples` directory which contains an example setup with corresponding webpack config (ie. must have a `webpack.config.js` file). This config is run with the installed webpack version to confirm compatibility. If a custom command needs to be run, there should be an accompanying `README.md` file which contains the command in a codeblock.
+
+### Readme file
+
+The readme can also contain any other content tha twould usualy be in the file. If there are multiple code blocks, only the first one will be used.
+
+    # A title
+
+    Some content
+
+    ```npm run example```
+
+    Some other content
+
+    ```command that will be ignored```
+
+The command can also contain some placeholders. Right now, only `<insert local ip>` is supported (will be replaced with `127.0.0.1`).
 
 <h2 align="center">Maintainers</h2>
 
