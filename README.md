@@ -32,6 +32,7 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
 
  - `--webpack` can be a version or path to remote repository
  - `--dependency` can be a dependency name (with or without version) or path to remote repository
+ - `--package-manager` (optional) can be set to `yarn` to use yarn for installation of modules. If not set (or set to anything else) it will default to npm
 
 #### Example
 
