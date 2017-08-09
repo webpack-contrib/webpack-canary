@@ -20,7 +20,7 @@
 
 Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack and dependency versions are stored in `webpack-to-dependency-versions.json`.
 
-Use `npm run squawk` to run all dependencies against all versions of webpack, and generate a report with successes and failures. This command does not take any flags.
+Use `npm run squawk` to run all dependencies against all versions of webpack, and generate a report with successes and failures. This command supports only one flag: `--verbose`.
 
 ### CLI Interface
 
