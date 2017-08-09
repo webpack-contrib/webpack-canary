@@ -1,10 +1,11 @@
 import Gauge from 'gauge';
 import { has } from 'lodash';
+import { argv } from 'yargs';
 
 import canaryRunner from '../lib/runner';
 import { createRunList, generateSummary, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
-const options = { loglevel: 'silent' };
+const options = argv.verbose ? { loglevel: 'debug' } : { loglevel: 'silent' };
 
 /**
  * Run the squawk script
@@ -19,8 +20,11 @@ export default async function() {
   let previousWebpack;
 
   const gauge = new Gauge();
-  const updateGauge = (webpack, value) => gauge.show(`${webpack}`, value / runList.length);
-  gauge.show('webpack', 0);
+  const updateGauge = (webpack, value) => !argv.verbose && gauge.show(`${webpack}`, value / runList.length);
+  if (!argv.verbose) {
+    gauge.show('webpack', 0);
+  }
+
   try {
     for (const runItem of runList) {
       const index = runList.indexOf(runItem);
