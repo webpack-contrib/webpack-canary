@@ -47,6 +47,22 @@ node index.js --webpack=webpack/webpack#master --dependency=https://github.com/a
 
 A dependency must include an `example` or `examples` directory which contains an example setup with corresponding webpack config (ie. must have a `webpack.config.js` file). This config is run with the installed webpack version to confirm compatibility. If a custom command needs to be run, there should be an accompanying `README.md` file which contains the command in a codeblock.
 
+### Readme file
+
+The readme can also contain any other content tha twould usualy be in the file. If there are multiple code blocks, only the first one will be used.
+
+    # A title
+
+    Some content
+
+    ```npm run example```
+
+    Some other content
+
+    ```command that will be ignored```
+
+The command can also contain some placeholders. Right now, only `<insert local ip>` is supported (will be replaced with `127.0.0.1`).
+
 <h2 align="center">Maintainers</h2>
 
 <table>
