@@ -78,27 +78,27 @@ The command can also contain some placeholders. Right now, only `<insert local i
       </td>
       <td align="center">
         <img width="150" height="150"
-        src="https://avatars3.githubusercontent.com/u/166921?v=3&s=150">
+        src="https://avatars3.githubusercontent.com/u/480290?v=3&s=150">
         </br>
-        <a href="https://github.com/bebraw">Juho Vepsäläinen</a>
+        <a href="https://github.com/darkokukovec">Darko Kukovec</a>
       </td>
       <td align="center">
         <img width="150" height="150"
-        src="https://avatars2.githubusercontent.com/u/8420490?v=3&s=150">
+        src="https://avatars3.githubusercontent.com/u/1520965?v=3&s=150">
         </br>
-        <a href="https://github.com/d3viant0ne">Joshua Wiens</a>
-      </td>
-      <td align="center">
-        <img width="150" height="150"
-        src="https://avatars3.githubusercontent.com/u/533616?v=3&s=150">
-        </br>
-        <a href="https://github.com/SpaceK33z">Kees Kluskens</a>
+        <a href="https://github.com/andreicek">Andrei Zvonimir Crnkovic</a>
       </td>
       <td align="center">
         <img width="150" height="150"
         src="https://avatars3.githubusercontent.com/u/3408176?v=3&s=150">
         </br>
         <a href="https://github.com/TheLarkInn">Sean Larkin</a>
+      </td>
+      <td align="center">
+        <img width="150" height="150"
+        src="https://avatars2.githubusercontent.com/u/8420490?v=3&s=150">
+        </br>
+        <a href="https://github.com/d3viant0ne">Joshua Wiens</a>
       </td>
     </tr>
   <tbody>
