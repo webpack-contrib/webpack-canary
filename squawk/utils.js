@@ -1,9 +1,10 @@
+import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import Table from 'cli-table2';
 import { each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
-
 import getLogger from '../lib/logger';
+import { CANARY_CONFIG_FILENAME } from '../lib/consts';
 
 export const logger = getLogger();
 
@@ -162,8 +163,27 @@ export const generateSummary = function(results, startTime) {
   completeTask(results);
 }
 
+const checkConfigPath = function(filename) {
+  const configPath = path.join(process.cwd(), filename);
+  if (fs.existsSync(configPath)) { // eslint-disable-line no-sync
+    return configPath;
+  }
+  return null;
+}
+
 export const loadConfig = function(argv) {
-  const configPath = argv.config ? path.join(process.cwd(), argv.config) : path.join(__dirname, 'webpack-canary.conf.js');
+  let configPath;
+  if (argv.config) {
+    configPath = checkConfigPath(argv.config);
+  }
+  if (!configPath) {
+    configPath = checkConfigPath(CANARY_CONFIG_FILENAME);
+  }
+
+  if (!configPath) {
+    throw new Error(`Config file "${argv.config || CANARY_CONFIG_FILENAME}" was not found`);
+  }
+
   const config = require(configPath);
   config.loglevel = config.loglevel || (argv.verbose ? 'debug' : 'silent');
   return config;
