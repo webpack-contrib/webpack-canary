@@ -7,7 +7,7 @@
     "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
     "watch": "mocha \"./lib/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
     "lint": "eslint lib",
-    "squawk": "node ./squawk.js"
+    "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "ISC",
