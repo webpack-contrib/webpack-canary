@@ -1,19 +1,20 @@
+import path from 'path';
 import chalk from 'chalk';
 import Table from 'cli-table2';
 import { each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
 
 import getLogger from '../lib/logger';
-import versionMapping from './webpack-to-dependency-versions';
 
 export const logger = getLogger();
 
 /**
  * Creates a list of webpack/dependency combinations
  *
+ * @param {Object} config - Command config
  * @returns {Array} List of webpack/dependency combinations
  */
-export const createRunList = function() {
-  const nestedRunList = map(versionMapping, function(dependencyVersions, webpackVersion) {
+export const createRunList = function(config) {
+  const nestedRunList = map(config.versions, function(dependencyVersions, webpackVersion) {
     return map(dependencyVersions, (dependencyVersion) => ({
       webpack: webpackVersion,
       dependency: dependencyVersion
@@ -159,4 +160,11 @@ export const generateSummary = function(results, startTime) {
   logger.newline();
 
   completeTask(results);
+}
+
+export const loadConfig = function(argv) {
+  const configPath = argv.config ? path.join(process.cwd(), argv.config) : path.join(__dirname, 'webpack-canary.conf.js');
+  const config = require(configPath);
+  config.loglevel = config.loglevel || (argv.verbose ? 'debug' : 'silent');
+  return config;
 }

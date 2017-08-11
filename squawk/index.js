@@ -3,9 +3,9 @@ import { has } from 'lodash';
 import { argv } from 'yargs';
 
 import canaryRunner from '../lib/runner';
-import { createRunList, generateSummary, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
+import { createRunList, generateSummary, loadConfig, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
-const options = argv.verbose ? { loglevel: 'debug' } : { loglevel: 'silent' };
+const config = loadConfig(argv);
 
 /**
  * Run the squawk script
@@ -15,7 +15,7 @@ const options = argv.verbose ? { loglevel: 'debug' } : { loglevel: 'silent' };
  */
 export default async function() {
   const startTime = new Date().getTime();
-  const runList = createRunList();
+  const runList = createRunList(config);
   let results = {};
   let pulsing;
   let previousWebpack;
@@ -39,7 +39,7 @@ export default async function() {
       previousWebpack = webpackText;
 
       try {
-        const examples = await canaryRunner(webpack, dependency, options);
+        const examples = await canaryRunner(webpack, dependency, config);
         updateGauge(webpack, (index + 1));
         results = updateResultsForSuccess({ webpack, dependency, examples }, results);
       } catch (err) {
