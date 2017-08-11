@@ -1,9 +1,8 @@
 import chalk from 'chalk';
 import Table from 'cli-table2';
 import { each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
-
 import getLogger from '../lib/logger';
-import versionMapping from './webpack-to-dependency-versions';
+import versionMapping from './webpack-to-dependency-versions.json';
 
 export const logger = getLogger();
 
@@ -12,15 +11,15 @@ export const logger = getLogger();
  *
  * @returns {Array} List of webpack/dependency combinations
  */
-export const createRunList = function() {
-  const nestedRunList = map(versionMapping, function(dependencyVersions, webpackVersion) {
-    return map(dependencyVersions, (dependencyVersion) => ({
+export function createRunList() {
+  const nestedRunList = map(versionMapping, (dependencyVersions, webpackVersion) => {
+    return map(dependencyVersions, dependencyVersion => ({
       webpack: webpackVersion,
-      dependency: dependencyVersion
+      dependency: dependencyVersion,
     }));
   });
   return flatten(nestedRunList);
-};
+}
 
 /**
  * Update the test results
@@ -30,15 +29,15 @@ export const createRunList = function() {
  * @param {Object} update - Updated data
  * @returns {Object} Test results
  */
-const updateResults = function({ webpack, dependency, examples }, results, update) {
+function updateResults({ webpack, dependency, examples }, results, update) {
   results[webpack] = results[webpack] || {};
   results[webpack][dependency] = extend({
     webpack,
     dependency,
-    examples
+    examples,
   }, update);
   return results;
-};
+}
 
 /**
  * Add success results
@@ -47,9 +46,9 @@ const updateResults = function({ webpack, dependency, examples }, results, updat
  * @param {Object} results - Results that need to be updated
  * @returns {Object} Updated results
  */
-export const updateResultsForSuccess = function(versions, results) {
+export function updateResultsForSuccess(versions, results) {
   return updateResults(versions, results, {
-    success: true
+    success: true,
   });
 }
 
@@ -61,10 +60,10 @@ export const updateResultsForSuccess = function(versions, results) {
  * @param {Object} results - Results that need to be updated
  * @returns {Object} Updated results
  */
-export const updateResultsForFailure = function(versions, err, results) {
+export function updateResultsForFailure(versions, err, results) {
   return updateResults(versions, results, {
     error: err,
-    success: false
+    success: false,
   });
 }
 
@@ -74,12 +73,12 @@ export const updateResultsForFailure = function(versions, err, results) {
  * @param {Array|Error} err - Error to output
  * @returns {String} Prettified error
  */
-const convertErrorToString = function(err) {
+function convertErrorToString(err) {
   if (isArray(err)) {
-    return '\n' + flatten(err).join('\n');
+    return `\n${flatten(err).join('\n')}`;
   }
   return `\n${err}`;
-};
+}
 
 /**
  * Output the task completion and exit
@@ -87,17 +86,17 @@ const convertErrorToString = function(err) {
  * @param {Object} results - Task results
  * @return {void}
  */
-const completeTask = function(results) {
+function completeTask(results) {
   const resultsList = flatten(values(results).map(values));
 
-  if (some(resultsList, (result) => !result.success)) {
+  if (some(resultsList, result => !result.success)) {
     logger.error('Compilation failures. Please review results above.');
     process.exit(1);
   }
 
   logger.success('Compilations complete. No issues detected.');
   process.exit();
-};
+}
 
 /**
  * Generate the test summary
@@ -106,23 +105,23 @@ const completeTask = function(results) {
  * @param {Number} startTime - Timestamp of the task start
  * @return {void}
  */
-export const generateSummary = function(results, startTime) {
-  each(results, function(webpackResults, webpackVersion) {
+export function generateSummary(results, startTime) {
+  each(results, (webpackResults, webpackVersion) => {
     logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
       head: ['Name', 'Example', 'Status'],
       style: { head: ['bold'] },
-      wordWrap: true
+      wordWrap: true,
     });
 
-    if (every(webpackResults, (result) => result.success)) {
+    if (every(webpackResults, result => result.success)) {
       logger.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
       logger.newline();
       return;
     }
 
-    each(webpackResults, function({ examples, error: dependencyError }, dependencyVersion) {
+    each(webpackResults, ({ examples, error: dependencyError }, dependencyVersion) => {
       const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
       const commandRow = [{ colSpan: 3, content: command }];
       const passedMessage = chalk.green('Passed');
@@ -132,18 +131,18 @@ export const generateSummary = function(results, startTime) {
         const outputDependencyError = convertErrorToString(dependencyError);
         table.push(
           [dependencyVersion, '-', `${failedMessage}${outputDependencyError}`],
-          commandRow
+          commandRow,
         );
         return;
       }
 
-      each(examples, function({ name, error: exampleError }, index) {
+      each(examples, ({ name, error: exampleError }, index) => {
         const exampleStatus = exampleError ? failedMessage : passedMessage;
         const outputExampleError = exampleError ? convertErrorToString(exampleError) : '';
         const isFirst = (index === 0);
         const nameColumn = isFirst ? [{ rowSpan: examples.length, content: dependencyVersion }] : [];
         table.push(
-          nameColumn.concat([name, `${exampleStatus}${outputExampleError}`])
+          nameColumn.concat([name, `${exampleStatus}${outputExampleError}`]),
         );
       });
 
@@ -155,7 +154,7 @@ export const generateSummary = function(results, startTime) {
   });
 
   const duration = new Date().getTime() - startTime;
-  logger.info(`Run completed in ${duration}ms`)
+  logger.info(`Run completed in ${duration}ms`);
   logger.newline();
 
   completeTask(results);
