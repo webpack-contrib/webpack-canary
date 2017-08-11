@@ -168,21 +168,11 @@ const checkConfigPath = function(filename) {
   if (fs.existsSync(configPath)) { // eslint-disable-line no-sync
     return configPath;
   }
-  return null;
+  throw new Error(`Config file "${filename}" was not found`);
 }
 
 export const loadConfig = function(argv) {
-  let configPath;
-  if (argv.config) {
-    configPath = checkConfigPath(argv.config);
-  }
-  if (!configPath) {
-    configPath = checkConfigPath(CANARY_CONFIG_FILENAME);
-  }
-
-  if (!configPath) {
-    throw new Error(`Config file "${argv.config || CANARY_CONFIG_FILENAME}" was not found`);
-  }
+  const configPath = checkConfigPath(argv.config || CANARY_CONFIG_FILENAME);
 
   const config = require(configPath);
   config.loglevel = config.loglevel || (argv.verbose ? 'debug' : 'silent');

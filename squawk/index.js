@@ -5,15 +5,14 @@ import { argv } from 'yargs';
 import canaryRunner from '../lib/runner';
 import { createRunList, generateSummary, loadConfig, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
-const config = loadConfig(argv);
-
 /**
  * Run the squawk script
  *
  * @export
  * @return {Promise} Promise indicating the process success
  */
-export default async function() {
+const runner = async function() {
+  const config = loadConfig(argv);
   const startTime = new Date().getTime();
   const runList = createRunList(config);
   let results = {};
@@ -59,4 +58,13 @@ export default async function() {
     gauge.hide();
     logger.error('Error ocurred running all combinations', err);
   }
+}
+
+export default function() {
+  return runner()
+    .catch((error) => {
+      logger.error('Errors have occurred running examples');
+      logger.error(error instanceof Error ? error.err || error.message : error);
+      process.exit(1);
+    });
 }
