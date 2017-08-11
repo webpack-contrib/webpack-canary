@@ -27,6 +27,8 @@
     "babel-core": "^6.25.0",
     "chai": "^4.1.1",
     "eslint": "^4.3.0",
+    "eslint-config-webpack": "^1.2.5",
+    "eslint-plugin-import": "^2.7.0",
     "mocha": "^3.5.0",
     "proxyquire": "^1.8.0",
     "sinon": "^2.4.1",
