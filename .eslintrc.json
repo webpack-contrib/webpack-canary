@@ -1,9 +1,6 @@
 {
   "extends": "webpack",
   "rules": {
-      "no-await-in-loop": "off",
-
-      "import/no-extraneous-dependencies": "off",
-      "no-unused-expressions": "off"
+      "no-await-in-loop": "off"
   }
 }
