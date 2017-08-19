@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import Table from 'cli-table2';
-import { each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
+import { cloneDeep, each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
 import getLogger from '../lib/logger';
 import { CANARY_CONFIG_FILENAME } from '../lib/consts';
 
@@ -14,15 +14,19 @@ export const logger = getLogger();
  * @param {Object} config - Command config
  * @returns {Array} List of webpack/dependency combinations
  */
-export const createRunList = function(config) {
-  const nestedRunList = map(config.versions, function(dependencyVersions, webpackVersion) {
-    return map(dependencyVersions, (dependencyVersion) => ({
-      webpack: webpackVersion,
-      dependency: dependencyVersion
-    }));
-  });
+export function createRunList(config) {
+  const nestedRunList = map(config.versions,
+    (dependencyVersions, webpackVersion) => map(dependencyVersions,
+      (dependencyVersion) => {
+        return {
+          webpack: webpackVersion,
+          dependency: dependencyVersion,
+        };
+      },
+    ),
+  );
   return flatten(nestedRunList);
-};
+}
 
 /**
  * Update the test results
@@ -32,15 +36,16 @@ export const createRunList = function(config) {
  * @param {Object} update - Updated data
  * @returns {Object} Test results
  */
-const updateResults = function({ webpack, dependency, examples }, results, update) {
-  results[webpack] = results[webpack] || {};
-  results[webpack][dependency] = extend({
+function updateResults({ webpack, dependency, examples }, results, update) {
+  const updated = cloneDeep(results);
+  updated[webpack] = updated[webpack] || {};
+  updated[webpack][dependency] = extend({
     webpack,
     dependency,
-    examples
+    examples,
   }, update);
-  return results;
-};
+  return updated;
+}
 
 /**
  * Add success results
@@ -49,9 +54,9 @@ const updateResults = function({ webpack, dependency, examples }, results, updat
  * @param {Object} results - Results that need to be updated
  * @returns {Object} Updated results
  */
-export const updateResultsForSuccess = function(versions, results) {
+export function updateResultsForSuccess(versions, results) {
   return updateResults(versions, results, {
-    success: true
+    success: true,
   });
 }
 
@@ -63,10 +68,10 @@ export const updateResultsForSuccess = function(versions, results) {
  * @param {Object} results - Results that need to be updated
  * @returns {Object} Updated results
  */
-export const updateResultsForFailure = function(versions, err, results) {
+export function updateResultsForFailure(versions, err, results) {
   return updateResults(versions, results, {
     error: err,
-    success: false
+    success: false,
   });
 }
 
@@ -76,12 +81,12 @@ export const updateResultsForFailure = function(versions, err, results) {
  * @param {Array|Error} err - Error to output
  * @returns {String} Prettified error
  */
-const convertErrorToString = function(err) {
+function convertErrorToString(err) {
   if (isArray(err)) {
-    return '\n' + flatten(err).join('\n');
+    return `\n${flatten(err).join('\n')}`;
   }
   return `\n${err}`;
-};
+}
 
 /**
  * Output the task completion and exit
@@ -89,17 +94,17 @@ const convertErrorToString = function(err) {
  * @param {Object} results - Task results
  * @return {void}
  */
-const completeTask = function(results) {
+function completeTask(results) {
   const resultsList = flatten(values(results).map(values));
 
-  if (some(resultsList, (result) => !result.success)) {
+  if (some(resultsList, result => !result.success)) {
     logger.error('Compilation failures. Please review results above.');
     process.exit(1);
   }
 
   logger.success('Compilations complete. No issues detected.');
   process.exit();
-};
+}
 
 /**
  * Generate the test summary
@@ -108,23 +113,23 @@ const completeTask = function(results) {
  * @param {Number} startTime - Timestamp of the task start
  * @return {void}
  */
-export const generateSummary = function(results, startTime) {
-  each(results, function(webpackResults, webpackVersion) {
+export function generateSummary(results, startTime) {
+  each(results, (webpackResults, webpackVersion) => {
     logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
       head: ['Name', 'Example', 'Status'],
       style: { head: ['bold'] },
-      wordWrap: true
+      wordWrap: true,
     });
 
-    if (every(webpackResults, (result) => result.success)) {
+    if (every(webpackResults, result => result.success)) {
       logger.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
       logger.newline();
       return;
     }
 
-    each(webpackResults, function({ examples, error: dependencyError }, dependencyVersion) {
+    each(webpackResults, ({ examples, error: dependencyError }, dependencyVersion) => {
       const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
       const commandRow = [{ colSpan: 3, content: command }];
       const passedMessage = chalk.green('Passed');
@@ -134,18 +139,18 @@ export const generateSummary = function(results, startTime) {
         const outputDependencyError = convertErrorToString(dependencyError);
         table.push(
           [dependencyVersion, '-', `${failedMessage}${outputDependencyError}`],
-          commandRow
+          commandRow,
         );
         return;
       }
 
-      each(examples, function({ name, error: exampleError }, index) {
+      each(examples, ({ name, error: exampleError }, index) => {
         const exampleStatus = exampleError ? failedMessage : passedMessage;
         const outputExampleError = exampleError ? convertErrorToString(exampleError) : '';
         const isFirst = (index === 0);
         const nameColumn = isFirst ? [{ rowSpan: examples.length, content: dependencyVersion }] : [];
         table.push(
-          nameColumn.concat([name, `${exampleStatus}${outputExampleError}`])
+          nameColumn.concat([name, `${exampleStatus}${outputExampleError}`]),
         );
       });
 
@@ -157,13 +162,13 @@ export const generateSummary = function(results, startTime) {
   });
 
   const duration = new Date().getTime() - startTime;
-  logger.info(`Run completed in ${duration}ms`)
+  logger.info(`Run completed in ${duration}ms`);
   logger.newline();
 
   completeTask(results);
 }
 
-const checkConfigPath = function(filename) {
+function checkConfigPath(filename) {
   const configPath = path.join(process.cwd(), filename);
   if (fs.existsSync(configPath)) { // eslint-disable-line no-sync
     return configPath;
@@ -171,10 +176,10 @@ const checkConfigPath = function(filename) {
   throw new Error(`Config file "${filename}" was not found`);
 }
 
-export const loadConfig = function(argv) {
+export function loadConfig(argv) {
   const configPath = checkConfigPath(argv.config || CANARY_CONFIG_FILENAME);
 
-  const config = require(configPath);
+  const config = require(configPath); // eslint-disable-line import/no-dynamic-require, global-require
   config.loglevel = config.loglevel || (argv.verbose ? 'debug' : 'silent');
   return config;
 }

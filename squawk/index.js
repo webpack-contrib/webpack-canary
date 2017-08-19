@@ -1,7 +1,6 @@
 import Gauge from 'gauge';
 import { has } from 'lodash';
 import { argv } from 'yargs';
-
 import canaryRunner from '../lib/runner';
 import { createRunList, generateSummary, loadConfig, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
@@ -11,7 +10,7 @@ import { createRunList, generateSummary, loadConfig, logger, updateResultsForFai
  * @export
  * @return {Promise} Promise indicating the process success
  */
-const runner = async function() {
+export async function runner() {
   const config = loadConfig(argv);
   const startTime = new Date().getTime();
   const runList = createRunList(config);
@@ -44,13 +43,13 @@ const runner = async function() {
       } catch (err) {
         updateGauge(webpack, (index + 1));
         const isExamplesError = has(err, 'examples');
-        const examples = isExamplesError ? err.examples : undefined;
-        const dependencyError = isExamplesError ? undefined : err;
+        const examples = isExamplesError ? err.examples : null;
+        const dependencyError = isExamplesError ? null : err;
         results = updateResultsForFailure({ webpack, dependency, examples }, dependencyError, results);
       }
     }
 
-    setTimeout(function() {
+    setTimeout(() => {
       gauge.hide();
       generateSummary(results, startTime);
     }, 500);
@@ -60,7 +59,7 @@ const runner = async function() {
   }
 }
 
-export default function() {
+export default function () {
   return runner()
     .catch((error) => {
       logger.error('Errors have occurred running examples');
