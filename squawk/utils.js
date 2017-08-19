@@ -15,7 +15,7 @@ export function createRunList() {
   const nestedRunList = map(versionMapping, (dependencyVersions, webpackVersion) => {
     return map(dependencyVersions, dependencyVersion => ({
       webpack: webpackVersion,
-      dependency: dependencyVersion,
+      depOptions: dependencyVersion,
     }));
   });
   return flatten(nestedRunList);
@@ -29,12 +29,13 @@ export function createRunList() {
  * @param {Object} update - Updated data
  * @returns {Object} Test results
  */
-function updateResults({ webpack, dependency, examples }, results, update) {
+function updateResults({ webpack, dependency, examples, tests }, results, update) {
   results[webpack] = results[webpack] || {};
   results[webpack][dependency] = extend({
     webpack,
     dependency,
     examples,
+    tests,
   }, update);
   return results;
 }

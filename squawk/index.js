@@ -28,7 +28,9 @@ export default async function () {
   try {
     for (const runItem of runList) {
       const index = runList.indexOf(runItem);
-      const { webpack, dependency } = runItem;
+      const { webpack, depOptions } = runItem;
+      const { dependency } = depOptions;
+      const canaryOptions = Object.assign({}, options, depOptions);
 
       const webpackText = `${webpack}`;
       clearInterval(pulsing);
@@ -38,15 +40,17 @@ export default async function () {
       previousWebpack = webpackText;
 
       try {
-        const examples = await canaryRunner(webpack, dependency, options);
+        const examples = await canaryRunner(webpack, dependency, canaryOptions);
         updateGauge(webpack, (index + 1));
         results = updateResultsForSuccess({ webpack, dependency, examples }, results);
       } catch (err) {
         updateGauge(webpack, (index + 1));
         const isExamplesError = has(err, 'examples');
+        const isTestsError = has(err, 'tests');
         const examples = isExamplesError ? err.examples : null;
-        const dependencyError = isExamplesError ? null : err;
-        results = updateResultsForFailure({ webpack, dependency, examples }, dependencyError, results);
+        const tests = isTestsError ? err.tests : null;
+        const dependencyError = (isExamplesError || isTestsError) ? null : err;
+        results = updateResultsForFailure({ webpack, dependency, examples, tests }, dependencyError, results);
       }
     }
 
