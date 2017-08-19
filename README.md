@@ -33,7 +33,9 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
  - `--webpack` can be a version or path to remote repository
  - `--dependency` can be a dependency name (with or without version) or path to remote repository
  - `--package-manager` (optional) can be set to `yarn` to use yarn for installation of modules. If not set (or set to anything else) it will default to npm
- - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--exmaple-dir demo`)
+ - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`). If not set, examples check will be skipped.
+ - `--test` A command that will run dependency tests
+ - `--test-path` A temporary path where the dependency will be copied and the tests will be run. Important when jest is used as test runner as it will ignore all paths that have `node_modules` in them. The default path is `<webpack-canary>/test_modules/test-dependency`
 
 #### Example
 
