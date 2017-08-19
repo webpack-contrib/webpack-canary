@@ -30,7 +30,9 @@ export default async function () {
       const index = runList.indexOf(runItem);
       const { webpack, depOptions } = runItem;
       const { dependency } = depOptions;
-      const canaryOptions = Object.assign({}, options, depOptions);
+      const canaryOptions = Object.assign({
+        exampleDirs: depOptions.exampleDir ? [].concat(depOptions.exampleDir) : null,
+      }, options, depOptions);
 
       const webpackText = `${webpack}`;
       clearInterval(pulsing);
