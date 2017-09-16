@@ -4,7 +4,13 @@ import { each, every, extend, flatten, isArray, keys, map, some, values } from '
 import getLogger from '../lib/logger';
 import versionMapping from './webpack-to-dependency-versions.json';
 
-export const logger = getLogger();
+let loggerInstance;
+
+export function initLogger(options) {
+  loggerInstance = getLogger(options.loglevel);
+}
+
+export const logger = loggerInstance;
 
 /**
  * Creates a list of webpack/dependency combinations
@@ -95,11 +101,11 @@ function completeTask(results) {
   const resultsList = flatten(values(results).map(values));
 
   if (some(resultsList, result => !result.success)) {
-    logger.error('Compilation failures. Please review results above.');
+    loggerInstance.error('Compilation failures. Please review results above.');
     process.exit(1);
   }
 
-  logger.success('Compilations complete. No issues detected.');
+  loggerInstance.success('Compilations complete. No issues detected.');
   process.exit();
 }
 
@@ -112,7 +118,7 @@ function completeTask(results) {
  */
 export function generateSummary(results, startTime) {
   each(results, (webpackResults, webpackVersion) => {
-    logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
+    loggerInstance.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
       head: ['Name', 'Example', 'Status'],
@@ -121,8 +127,8 @@ export function generateSummary(results, startTime) {
     });
 
     if (every(webpackResults, result => result.success)) {
-      logger.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
-      logger.newline();
+      loggerInstance.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
+      loggerInstance.newline();
       return;
     }
 
@@ -143,6 +149,7 @@ export function generateSummary(results, startTime) {
       const failedMessage = chalk.red('Failed');
 
       if (dependencyError) {
+        loggerInstance.debug(dependencyError.stack);
         const outputDependencyError = convertErrorToString(dependencyError);
         table.push(
           [dependencyVersion, '-', `${failedMessage}${outputDependencyError}`],
@@ -159,28 +166,34 @@ export function generateSummary(results, startTime) {
         table.push(
           nameColumn.concat([name, `${exampleStatus}${outputExampleError}`]),
         );
+        if (exampleError) {
+          loggerInstance.debug(exampleError.stack);
+        }
       });
 
-      each(tests, ({ name, error: testError }, index) => {
+      each(tests, ({ error: testError }, index) => {
         const testsStatus = testError ? failedMessage : passedMessage;
         const outputTestError = testError ? convertErrorToString(testError) : '';
         const isFirst = (index === 0);
         const nameColumn = isFirst ? [{ rowSpan: tests.length, content: dependencyVersion }] : [];
         table.push(
-          nameColumn.concat([name, `${testsStatus}${outputTestError}`]),
+          nameColumn.concat([`Test: ${options.test}`, `${testsStatus}${outputTestError}`]),
         );
+        if (testError && testError.stack) {
+          loggerInstance.debug(testError.stack);
+        }
       });
 
       table.push(commandRow);
     });
 
-    logger.info(`${table}`);
-    logger.newline();
+    loggerInstance.info(`${table}`);
+    loggerInstance.newline();
   });
 
   const duration = new Date().getTime() - startTime;
-  logger.info(`Run completed in ${duration}ms`);
-  logger.newline();
+  loggerInstance.info(`Run completed in ${duration}ms`);
+  loggerInstance.newline();
 
   completeTask(results);
 }

@@ -3,9 +3,11 @@ import { has } from 'lodash';
 import { argv } from 'yargs';
 import canaryRunner from '../lib/runner';
 import { argvToOptions } from '../lib/utils';
-import { createRunList, generateSummary, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
+import { createRunList, generateSummary, initLogger, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
 const options = argvToOptions(argv, 'silent');
+
+initLogger(options);
 
 /**
  * Run the squawk script

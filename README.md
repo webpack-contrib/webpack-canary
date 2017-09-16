@@ -38,6 +38,7 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
  - `--test-path` A temporary path where the dependency will be copied and the tests will be run. Important when jest is used as test runner as it will ignore all paths that have `node_modules` in them. The default path is `<webpack-canary>/test_modules/test-dependency`
  - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`)
  - `--progress` Show the progress bar (it will override the `loglevel` option and set it to `warn`)
+ - `--timeout` Interrupts command execution after the defined time (default is 60s). Applies to installing dependencies and running tests.
 
 #### Example
 
