@@ -2,9 +2,10 @@ import Gauge from 'gauge';
 import { has } from 'lodash';
 import { argv } from 'yargs';
 import canaryRunner from '../lib/runner';
+import { argvToOptions } from '../lib/utils';
 import { createRunList, generateSummary, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
-const options = argv.verbose ? { loglevel: 'debug' } : { loglevel: 'silent' };
+const options = argvToOptions(argv, 'silent');
 
 /**
  * Run the squawk script
@@ -44,7 +45,7 @@ export default async function () {
       try {
         const examples = await canaryRunner(webpack, dependency, canaryOptions);
         updateGauge(webpack, (index + 1));
-        results = updateResultsForSuccess({ webpack, dependency, examples }, results);
+        results = updateResultsForSuccess({ webpack, dependency, examples }, results, canaryOptions);
       } catch (err) {
         updateGauge(webpack, (index + 1));
         const isExamplesError = has(err, 'examples');
@@ -52,7 +53,7 @@ export default async function () {
         const examples = isExamplesError ? err.examples : null;
         const tests = isTestsError ? err.tests : null;
         const dependencyError = (isExamplesError || isTestsError) ? null : err;
-        results = updateResultsForFailure({ webpack, dependency, examples, tests }, dependencyError, results);
+        results = updateResultsForFailure({ webpack, dependency, examples, tests }, dependencyError, results, canaryOptions);
       }
     }
 

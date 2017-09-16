@@ -45,11 +45,13 @@ function updateResults({ webpack, dependency, examples, tests }, results, update
  *
  * @param {Object} versions - Used versions
  * @param {Object} results - Results that need to be updated
+ * @param {Object} canaryOptions - Options for the canary runner
  * @returns {Object} Updated results
  */
-export function updateResultsForSuccess(versions, results) {
+export function updateResultsForSuccess(versions, results, canaryOptions) {
   return updateResults(versions, results, {
     success: true,
+    options: canaryOptions,
   });
 }
 
@@ -59,12 +61,14 @@ export function updateResultsForSuccess(versions, results) {
  * @param {Object} versions - Used versions
  * @param {Error} err - Failure reason
  * @param {Object} results - Results that need to be updated
+ * @param {Object} canaryOptions - Options for the canary runner
  * @returns {Object} Updated results
  */
-export function updateResultsForFailure(versions, err, results) {
+export function updateResultsForFailure(versions, err, results, canaryOptions) {
   return updateResults(versions, results, {
     error: err,
     success: false,
+    options: canaryOptions,
   });
 }
 
@@ -122,8 +126,18 @@ export function generateSummary(results, startTime) {
       return;
     }
 
-    each(webpackResults, ({ examples, error: dependencyError }, dependencyVersion) => {
-      const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+    each(webpackResults, ({ examples, error: dependencyError, options = {} }, dependencyVersion) => {
+      let command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+      if (options.test) {
+        command += ` --test="${options.test}"`;
+      }
+      if (options.testPath) {
+        command += ` --test-path="${options.testPath}"`;
+      }
+      if (options.exampleDir) {
+        command += ` --example-dir"${options.exampleDir}"`;
+      }
+
       const commandRow = [{ colSpan: 3, content: command }];
       const passedMessage = chalk.green('Passed');
       const failedMessage = chalk.red('Failed');
