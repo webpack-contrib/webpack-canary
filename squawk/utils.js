@@ -126,7 +126,7 @@ export function generateSummary(results, startTime) {
       return;
     }
 
-    each(webpackResults, ({ examples, error: dependencyError, options = {} }, dependencyVersion) => {
+    each(webpackResults, ({ examples, tests, error: dependencyError, options = {} }, dependencyVersion) => {
       let command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
       if (options.test) {
         command += ` --test="${options.test}"`;
@@ -158,6 +158,16 @@ export function generateSummary(results, startTime) {
         const nameColumn = isFirst ? [{ rowSpan: examples.length, content: dependencyVersion }] : [];
         table.push(
           nameColumn.concat([name, `${exampleStatus}${outputExampleError}`]),
+        );
+      });
+
+      each(tests, ({ name, error: testError }, index) => {
+        const testsStatus = testError ? failedMessage : passedMessage;
+        const outputTestError = testError ? convertErrorToString(testError) : '';
+        const isFirst = (index === 0);
+        const nameColumn = isFirst ? [{ rowSpan: tests.length, content: dependencyVersion }] : [];
+        table.push(
+          nameColumn.concat([name, `${testsStatus}${outputTestError}`]),
         );
       });
 
