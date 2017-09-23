@@ -10,9 +10,8 @@ let loggerInstance;
 
 export function initLogger(options) {
   loggerInstance = getLogger(options.loglevel);
+  return loggerInstance;
 }
-
-export const logger = loggerInstance;
 
 /**
  * Creates a list of webpack/dependency combinations
@@ -95,6 +94,8 @@ export function updateResultsForFailure(versions, err, results, canaryOptions) {
 function convertErrorToString(err) {
   if (isArray(err)) {
     return `\n${flatten(err).join('\n')}`;
+  } else if (err.err) {
+    return `\n${err.err}`;
   }
   return `\n${err}`;
 }
