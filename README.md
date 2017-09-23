@@ -24,6 +24,16 @@ Use `npm run squawk` to run all dependencies against all versions of webpack, an
 
 The squawk command can receive all the CLI options listed bellow, but they also can be set in the config (but with camelCase instead of kebab-case). The config has the priority before CLI arguments if both are set.
 
+#### For loaders and plugins
+
+If a loader or plugin is the tool user, it will most likely define all webpack versions it wants to support with the current dependency version.
+
+For example, if a loader `foo-loader` wants to support webpack `^2.3.0` it should set the wanted Webpack versions to `2.3`, `3`, and `webpack/webpack#master` to check the latest version.
+
+#### For webpack
+
+If Webpack is the tool user, it will most likely define the latest webpack version and a list of dependencies and their versions.
+
 ### CLI Interface
 
 To run a specific dependency version against a specific version of webpack, use the canary CLI interface
