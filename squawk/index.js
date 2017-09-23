@@ -34,7 +34,7 @@ export async function runner() {
       const index = runList.indexOf(runItem);
       const { webpack, dependency: depOptions } = runItem;
       const { dependency } = depOptions;
-      const canaryOptions = Object.assign({}, options, depOptions);
+      const canaryOptions = Object.assign({}, options, config, depOptions);
 
       const webpackText = `${webpack}`;
       clearInterval(pulsing);
