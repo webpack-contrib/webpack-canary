@@ -6,7 +6,13 @@ import { cloneDeep, each, every, extend, flatten, isArray, keys, map, some, valu
 import getLogger from '../lib/logger';
 import { CANARY_CONFIG_FILENAME } from '../lib/consts';
 
-export const logger = getLogger();
+let loggerInstance;
+
+export function initLogger(options) {
+  loggerInstance = getLogger(options.loglevel);
+}
+
+export const logger = loggerInstance;
 
 /**
  * Creates a list of webpack/dependency combinations
@@ -36,13 +42,14 @@ export function createRunList(config) {
  * @param {Object} update - Updated data
  * @returns {Object} Test results
  */
-function updateResults({ webpack, dependency, examples }, results, update) {
+function updateResults({ webpack, dependency, examples, tests }, results, update) {
   const updated = cloneDeep(results);
   updated[webpack] = updated[webpack] || {};
   updated[webpack][dependency] = extend({
     webpack,
     dependency,
     examples,
+    tests,
   }, update);
   return updated;
 }
@@ -52,11 +59,13 @@ function updateResults({ webpack, dependency, examples }, results, update) {
  *
  * @param {Object} versions - Used versions
  * @param {Object} results - Results that need to be updated
+ * @param {Object} canaryOptions - Options for the canary runner
  * @returns {Object} Updated results
  */
-export function updateResultsForSuccess(versions, results) {
+export function updateResultsForSuccess(versions, results, canaryOptions) {
   return updateResults(versions, results, {
     success: true,
+    options: canaryOptions,
   });
 }
 
@@ -66,12 +75,14 @@ export function updateResultsForSuccess(versions, results) {
  * @param {Object} versions - Used versions
  * @param {Error} err - Failure reason
  * @param {Object} results - Results that need to be updated
+ * @param {Object} canaryOptions - Options for the canary runner
  * @returns {Object} Updated results
  */
-export function updateResultsForFailure(versions, err, results) {
+export function updateResultsForFailure(versions, err, results, canaryOptions) {
   return updateResults(versions, results, {
     error: err,
     success: false,
+    options: canaryOptions,
   });
 }
 
@@ -98,11 +109,11 @@ function completeTask(results) {
   const resultsList = flatten(values(results).map(values));
 
   if (some(resultsList, result => !result.success)) {
-    logger.error('Compilation failures. Please review results above.');
+    loggerInstance.error('Compilation failures. Please review results above.');
     process.exit(1);
   }
 
-  logger.success('Compilations complete. No issues detected.');
+  loggerInstance.success('Compilations complete. No issues detected.');
   process.exit();
 }
 
@@ -115,7 +126,7 @@ function completeTask(results) {
  */
 export function generateSummary(results, startTime) {
   each(results, (webpackResults, webpackVersion) => {
-    logger.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
+    loggerInstance.info(chalk.bold.underline(`Webpack ${webpackVersion}`));
 
     const table = new Table({
       head: ['Name', 'Example', 'Status'],
@@ -124,18 +135,29 @@ export function generateSummary(results, startTime) {
     });
 
     if (every(webpackResults, result => result.success)) {
-      logger.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
-      logger.newline();
+      loggerInstance.success(`No issues detected running ${keys(webpackResults).length} dependencies`);
+      loggerInstance.newline();
       return;
     }
 
-    each(webpackResults, ({ examples, error: dependencyError }, dependencyVersion) => {
-      const command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+    each(webpackResults, ({ examples, tests, error: dependencyError, options = {} }, dependencyVersion) => {
+      let command = `node ./index.js --webpack=${webpackVersion} --dependency=${dependencyVersion}`;
+      if (options.test) {
+        command += ` --test="${options.test}"`;
+      }
+      if (options.testPath) {
+        command += ` --test-path="${options.testPath}"`;
+      }
+      if (options.exampleDir) {
+        command += ` --example-dir"${options.exampleDir}"`;
+      }
+
       const commandRow = [{ colSpan: 3, content: command }];
       const passedMessage = chalk.green('Passed');
       const failedMessage = chalk.red('Failed');
 
       if (dependencyError) {
+        loggerInstance.debug(dependencyError.stack);
         const outputDependencyError = convertErrorToString(dependencyError);
         table.push(
           [dependencyVersion, '-', `${failedMessage}${outputDependencyError}`],
@@ -152,18 +174,34 @@ export function generateSummary(results, startTime) {
         table.push(
           nameColumn.concat([name, `${exampleStatus}${outputExampleError}`]),
         );
+        if (exampleError) {
+          loggerInstance.debug(exampleError.stack);
+        }
+      });
+
+      each(tests, ({ error: testError }, index) => {
+        const testsStatus = testError ? failedMessage : passedMessage;
+        const outputTestError = testError ? convertErrorToString(testError) : '';
+        const isFirst = (index === 0);
+        const nameColumn = isFirst ? [{ rowSpan: tests.length, content: dependencyVersion }] : [];
+        table.push(
+          nameColumn.concat([`Test: ${options.test}`, `${testsStatus}${outputTestError}`]),
+        );
+        if (testError && testError.stack) {
+          loggerInstance.debug(testError.stack);
+        }
       });
 
       table.push(commandRow);
     });
 
-    logger.info(`${table}`);
-    logger.newline();
+    loggerInstance.info(`${table}`);
+    loggerInstance.newline();
   });
 
   const duration = new Date().getTime() - startTime;
-  logger.info(`Run completed in ${duration}ms`);
-  logger.newline();
+  loggerInstance.info(`Run completed in ${duration}ms`);
+  loggerInstance.newline();
 
   completeTask(results);
 }

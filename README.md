@@ -33,7 +33,12 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
  - `--webpack` can be a version or path to remote repository
  - `--dependency` can be a dependency name (with or without version) or path to remote repository
  - `--package-manager` (optional) can be set to `yarn` to use yarn for installation of modules. If not set (or set to anything else) it will default to npm
- - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--exmaple-dir demo`)
+ - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`). If not set, examples check will be skipped.
+ - `--test` A command that will run dependency tests
+ - `--test-path` A temporary path where the dependency will be copied and the tests will be run. Important when jest is used as test runner as it will ignore all paths that have `node_modules` in them. The default path is `<webpack-canary>/test_modules/test-dependency`
+ - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`)
+ - `--progress` Show the progress bar (it will override the `loglevel` option and set it to `warn`)
+ - `--timeout` Interrupts command execution after the defined time (default is 60s). Applies to installing dependencies and running tests.
 
 #### Example
 
@@ -51,7 +56,7 @@ A dependency must include an `example` or `examples` directory which contains an
 
 ### Readme file
 
-The readme can also contain any other content tha twould usualy be in the file. If there are multiple code blocks, only the first one will be used.
+The readme can also contain any other content that would usually be in the file. If there are multiple code blocks, only the first one will be used.
 
     # A title
 

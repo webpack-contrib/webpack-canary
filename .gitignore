@@ -3,6 +3,7 @@
 /test/browsertest/js
 /test/fixtures/temp-cache-fixture
 /test_modules/node_modules
+/test_modules/test-dependency
 /test_modules/package-lock.json
 /test_modules/yarn.lock
 /benchmark/js

@@ -2,7 +2,12 @@ import Gauge from 'gauge';
 import { has } from 'lodash';
 import { argv } from 'yargs';
 import canaryRunner from '../lib/runner';
-import { createRunList, generateSummary, loadConfig, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
+import { argvToOptions } from '../lib/utils';
+import { createRunList, generateSummary, initLogger, loadConfig, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
+
+const options = argvToOptions(argv, 'silent');
+
+initLogger(options);
 
 /**
  * Run the squawk script
@@ -27,7 +32,11 @@ export async function runner() {
   try {
     for (const runItem of runList) {
       const index = runList.indexOf(runItem);
-      const { webpack, dependency } = runItem;
+      const { webpack, depOptions } = runItem;
+      const { dependency } = depOptions;
+      const canaryOptions = Object.assign({
+        exampleDirs: depOptions.exampleDir ? [].concat(depOptions.exampleDir) : null,
+      }, options, depOptions);
 
       const webpackText = `${webpack}`;
       clearInterval(pulsing);
@@ -37,15 +46,17 @@ export async function runner() {
       previousWebpack = webpackText;
 
       try {
-        const examples = await canaryRunner(webpack, dependency, config);
+        const examples = await canaryRunner(webpack, dependency, canaryOptions);
         updateGauge(webpack, (index + 1));
-        results = updateResultsForSuccess({ webpack, dependency, examples }, results);
+        results = updateResultsForSuccess({ webpack, dependency, examples }, results, canaryOptions);
       } catch (err) {
         updateGauge(webpack, (index + 1));
         const isExamplesError = has(err, 'examples');
+        const isTestsError = has(err, 'tests');
         const examples = isExamplesError ? err.examples : null;
-        const dependencyError = isExamplesError ? null : err;
-        results = updateResultsForFailure({ webpack, dependency, examples }, dependencyError, results);
+        const tests = isTestsError ? err.tests : null;
+        const dependencyError = (isExamplesError || isTestsError) ? null : err;
+        results = updateResultsForFailure({ webpack, dependency, examples, tests }, dependencyError, results, canaryOptions);
       }
     }
 
