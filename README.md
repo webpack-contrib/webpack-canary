@@ -34,6 +34,10 @@ For example, if a loader `foo-loader` wants to support webpack `^2.3.0` it shoul
 
 If Webpack is the tool user, it will most likely define the latest webpack version and a list of dependencies and their versions.
 
+### npm ignore
+
+If you have npm ignore defined, it will most likely skip the download of tests and examples. Therefore, you may need to use tarballs for dependencies instead of regular npm versions: `https://github.com/webpack/webpack-dev-server/archive/v2.3.0.tar.gz` instead of `webpack-dev-server@2.3.0`. Keep in mind that the `2.3.0` version in the url is defined with the git tag, not with the npm release!
+
 ### CLI Interface
 
 To run a specific dependency version against a specific version of webpack, use the canary CLI interface
