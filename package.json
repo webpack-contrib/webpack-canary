@@ -11,7 +11,7 @@
     "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
     "watch": "mocha \"./lib/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
     "lint": "eslint lib",
-    "squawk": "node ./squawk.js"
+    "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "ISC",
@@ -22,21 +22,21 @@
     "chalk": "^2.1.0",
     "cli-table2": "^0.2.0",
     "gauge": "^2.7.4",
-    "glob-promise": "^3.1.0",
+    "glob-promise": "^3.2.0",
     "lodash": "^4.17.4",
     "rmfr": "^1.0.3",
     "semver": "^5.4.1",
-    "yargs": "^8.0.2"
+    "yargs": "^9.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "chai": "^4.1.2",
-    "eslint": "^4.7.0",
+    "eslint": "^4.7.2",
     "eslint-config-webpack": "^1.2.5",
     "eslint-plugin-import": "^2.7.0",
     "mocha": "^3.5.3",
     "proxyquire": "^1.8.0",
-    "sinon": "^3.2.1",
+    "sinon": "^3.3.0",
     "sinon-chai": "^2.13.0",
     "sinon-promise": "^0.1.3"
   },

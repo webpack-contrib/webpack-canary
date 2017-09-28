@@ -18,9 +18,25 @@
 
 ### Squawk
 
-Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack and dependency versions are stored in `webpack-to-dependency-versions.json`.
+Expected usage of the canary is to check multiple versions of webpack against a set of dependencies and squawk if there are any failures. The `squawk` task is a runner to just that. Webpack and dependency versions should stored in `webpack-canary.conf.js` in your project root folder. Check out the [example](webpack-config.example.conf.js) for the config format.
 
 Use `npm run squawk` to run all dependencies against all versions of webpack, and generate a report with successes and failures. This command supports only one flag: `--verbose`.
+
+The squawk command can receive all the CLI options listed bellow, but they also can be set in the config (but with camelCase instead of kebab-case). The config has the priority before CLI arguments if both are set.
+
+#### For loaders and plugins
+
+If a loader or plugin is the tool user, it will most likely define all webpack versions it wants to support with the current dependency version.
+
+For example, if a loader `foo-loader` wants to support webpack `^2.3.0` it should set the wanted Webpack versions to `2.3`, `3`, and `webpack/webpack#master` to check the latest version.
+
+#### For webpack
+
+If Webpack is the tool user, it will most likely define the latest webpack version and a list of dependencies and their versions.
+
+### npm ignore
+
+If you have npm ignore defined, it will most likely skip the download of tests and examples. Therefore, you may need to use tarballs for dependencies instead of regular npm versions: `https://github.com/webpack/webpack-dev-server/archive/v2.3.0.tar.gz` instead of `webpack-dev-server@2.3.0`. Keep in mind that the `2.3.0` version in the url is defined with the git tag, not with the npm release!
 
 ### CLI Interface
 
@@ -33,10 +49,9 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
  - `--webpack` can be a version or path to remote repository
  - `--dependency` can be a dependency name (with or without version) or path to remote repository
  - `--package-manager` (optional) can be set to `yarn` to use yarn for installation of modules. If not set (or set to anything else) it will default to npm
- - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`). If not set, examples check will be skipped.
  - `--test` A command that will run dependency tests
  - `--test-path` A temporary path where the dependency will be copied and the tests will be run. Important when jest is used as test runner as it will ignore all paths that have `node_modules` in them. The default path is `<webpack-canary>/test_modules/test-dependency`
- - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`)
+ - `--example-dir` can be one or more relative paths to examples folders (e.g. `--example-dir ./demo` or `--example-dir demo`). If not set, examples check will be skipped.
  - `--progress` Show the progress bar (it will override the `loglevel` option and set it to `warn`)
  - `--timeout` Interrupts command execution after the defined time (default is 60s). Applies to installing dependencies and running tests.
 
@@ -52,7 +67,7 @@ node index.js --webpack=webpack/webpack#master --dependency=https://github.com/a
 
 <h2 align="center">Compatibility</h2>
 
-A dependency must include an `example` or `examples` directory which contains an example setup with corresponding webpack config (ie. must have a `webpack.config.js` file). This config is run with the installed webpack version to confirm compatibility. If a custom command needs to be run, there should be an accompanying `README.md` file which contains the command in a codeblock.
+If you want to check examples, the dependency should include an directory (defined in the `example-dir` option) which contains an example setup with corresponding webpack config (ie. must have a `webpack.config.js` file). This config is run with the installed webpack version to confirm compatibility. If a custom command needs to be run, there should be an accompanying `README.md` file which contains the command in a codeblock.
 
 ### Readme file
 

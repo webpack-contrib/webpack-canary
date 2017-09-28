@@ -1,29 +1,35 @@
+import fs from 'fs';
+import path from 'path';
 import chalk from 'chalk';
 import Table from 'cli-table2';
-import { each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
+import { cloneDeep, each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
 import getLogger from '../lib/logger';
-import versionMapping from './webpack-to-dependency-versions.json';
+import { CANARY_CONFIG_FILENAME } from '../lib/consts';
 
 let loggerInstance;
 
 export function initLogger(options) {
   loggerInstance = getLogger(options.loglevel);
+  return loggerInstance;
 }
-
-export const logger = loggerInstance;
 
 /**
  * Creates a list of webpack/dependency combinations
  *
+ * @param {Object} config - Command config
  * @returns {Array} List of webpack/dependency combinations
  */
-export function createRunList() {
-  const nestedRunList = map(versionMapping, (dependencyVersions, webpackVersion) => {
-    return map(dependencyVersions, dependencyVersion => ({
-      webpack: webpackVersion,
-      depOptions: dependencyVersion,
-    }));
-  });
+export function createRunList(config) {
+  const nestedRunList = map(config.versions,
+    (dependencyVersions, webpackVersion) => map(dependencyVersions,
+      (dependencyVersion) => {
+        return {
+          webpack: webpackVersion,
+          dependency: dependencyVersion,
+        };
+      },
+    ),
+  );
   return flatten(nestedRunList);
 }
 
@@ -36,14 +42,15 @@ export function createRunList() {
  * @returns {Object} Test results
  */
 function updateResults({ webpack, dependency, examples, tests }, results, update) {
-  results[webpack] = results[webpack] || {};
-  results[webpack][dependency] = extend({
+  const updated = cloneDeep(results);
+  updated[webpack] = updated[webpack] || {};
+  updated[webpack][dependency] = extend({
     webpack,
     dependency,
     examples,
     tests,
   }, update);
-  return results;
+  return updated;
 }
 
 /**
@@ -87,6 +94,8 @@ export function updateResultsForFailure(versions, err, results, canaryOptions) {
 function convertErrorToString(err) {
   if (isArray(err)) {
     return `\n${flatten(err).join('\n')}`;
+  } else if (err.err) {
+    return `\n${err.err}`;
   }
   return `\n${err}`;
 }
@@ -196,4 +205,20 @@ export function generateSummary(results, startTime) {
   loggerInstance.newline();
 
   completeTask(results);
+}
+
+function checkConfigPath(filename) {
+  const configPath = path.join(process.cwd(), filename);
+  if (fs.existsSync(configPath)) { // eslint-disable-line no-sync
+    return configPath;
+  }
+  throw new Error(`Config file "${filename}" was not found`);
+}
+
+export function loadConfig(argv) {
+  const configPath = checkConfigPath(argv.config || CANARY_CONFIG_FILENAME);
+
+  const config = require(configPath); // eslint-disable-line import/no-dynamic-require, global-require
+  config.loglevel = config.loglevel || (argv.verbose ? 'debug' : 'silent');
+  return config;
 }

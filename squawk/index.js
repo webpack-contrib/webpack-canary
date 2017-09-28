@@ -3,11 +3,11 @@ import { has } from 'lodash';
 import { argv } from 'yargs';
 import canaryRunner from '../lib/runner';
 import { argvToOptions } from '../lib/utils';
-import { createRunList, generateSummary, initLogger, logger, updateResultsForFailure, updateResultsForSuccess } from './utils';
+import { createRunList, generateSummary, initLogger, loadConfig, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
 const options = argvToOptions(argv, 'silent');
 
-initLogger(options);
+const logger = initLogger(options);
 
 /**
  * Run the squawk script
@@ -15,9 +15,10 @@ initLogger(options);
  * @export
  * @return {Promise} Promise indicating the process success
  */
-export default async function () {
+export async function runner() {
+  const config = loadConfig(argv);
   const startTime = new Date().getTime();
-  const runList = createRunList();
+  const runList = createRunList(config);
   let results = {};
   let pulsing;
   let previousWebpack;
@@ -31,11 +32,9 @@ export default async function () {
   try {
     for (const runItem of runList) {
       const index = runList.indexOf(runItem);
-      const { webpack, depOptions } = runItem;
+      const { webpack, dependency: depOptions } = runItem;
       const { dependency } = depOptions;
-      const canaryOptions = Object.assign({
-        exampleDirs: depOptions.exampleDir ? [].concat(depOptions.exampleDir) : null,
-      }, options, depOptions);
+      const canaryOptions = Object.assign({}, options, config, depOptions);
 
       const webpackText = `${webpack}`;
       clearInterval(pulsing);
@@ -67,4 +66,13 @@ export default async function () {
     gauge.hide();
     logger.error('Error ocurred running all combinations', err);
   }
+}
+
+export default function () {
+  return runner()
+    .catch((error) => {
+      logger.error('Errors have occurred running examples');
+      logger.error(error instanceof Error ? error.err || error.message : error);
+      process.exit(1);
+    });
 }
