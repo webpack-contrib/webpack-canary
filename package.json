@@ -14,7 +14,7 @@
     "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.6.0",
