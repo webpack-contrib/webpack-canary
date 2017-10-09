@@ -11,11 +11,16 @@
     "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
     "watch": "mocha \"./lib/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
     "lint": "eslint lib",
-    "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js"
+    "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js",
+    "build:canary": "babel lib/ --out-dir dist/canary",
+    "build:squawk": "babel squawk/ --out-dir dist/squawk",
+    "clean": "[[ -d dist ]] && rm -r dist || return 0",
+    "build": "npm-run-all clean build:*"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "MIT",
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.26.0",
@@ -24,6 +29,7 @@
     "gauge": "^2.7.4",
     "glob-promise": "^3.2.0",
     "lodash": "^4.17.4",
+    "npm-run-all": "^4.1.1",
     "rmfr": "^1.0.3",
     "semver": "^5.4.1",
     "yargs": "^9.0.1"
