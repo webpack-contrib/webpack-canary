@@ -4,8 +4,8 @@
   "description": "Canary tooling for checking webpack dependencies against specific webpack versions",
   "main": "index.js",
   "bin": {
-    "canary": "./index.js",
-    "squawk": "./squawk.js"
+    "canary": "./dist/canary/index.js",
+    "squawk": "./dist/squawk/index.js"
   },
   "scripts": {
     "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
@@ -15,7 +15,8 @@
     "build:canary": "babel lib/ --out-dir dist/canary",
     "build:squawk": "babel squawk/ --out-dir dist/squawk",
     "clean": "[[ -d dist ]] && rm -r dist || return 0",
-    "build": "npm-run-all clean build:*"
+    "build": "npm-run-all clean build:*",
+    "prepublish": "npm run build"
   },
   "author": "Alistair Brown <npm@alistairjcbrown.com> (http://alistairjcbrown.com/)",
   "license": "MIT",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-plugin-add-header-comment": "^1.0.3",
     "chai": "^4.1.2",
     "eslint": "^4.7.2",
     "eslint-config-webpack": "^1.2.5",
