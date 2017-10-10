@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import Gauge from 'gauge';
 import { has } from 'lodash';
 import { argv } from 'yargs';
