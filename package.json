@@ -37,7 +37,6 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-plugin-add-header-comment": "^1.0.3",
     "chai": "^4.1.2",
     "eslint": "^4.7.2",
     "eslint-config-webpack": "^1.2.5",
