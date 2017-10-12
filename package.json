@@ -14,7 +14,7 @@
     "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js",
     "build:canary": "babel lib/ --out-dir dist/canary",
     "build:squawk": "babel squawk/ --out-dir dist/squawk",
-    "clean": "[[ -d dist ]] && rm -r dist || return 0",
+    "clean": "[[ -d dist ]] && rm -r dist || echo",
     "build": "npm-run-all clean build:*",
     "prepublish": "npm run build"
   },
