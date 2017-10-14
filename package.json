@@ -1,6 +1,6 @@
 {
   "name": "webpack-canary",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Canary tooling for checking webpack dependencies against specific webpack versions",
   "main": "./dist/canary/index.js",
   "bin": {
