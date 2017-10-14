@@ -2,7 +2,7 @@
   "name": "webpack-canary",
   "version": "1.0.2",
   "description": "Canary tooling for checking webpack dependencies against specific webpack versions",
-  "main": "index.js",
+  "main": "./dist/canary/index.js",
   "bin": {
     "canary": "./dist/canary/index.js",
     "squawk": "./dist/squawk/index.js"
@@ -14,7 +14,7 @@
     "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js",
     "build:canary": "babel lib/ --out-dir dist/canary",
     "build:squawk": "babel squawk/ --out-dir dist/squawk",
-    "clean": "[[ -d dist ]] && rm -r dist || echo",
+    "clean": "[[ -d dist ]] && rm -r dist || true",
     "build": "npm-run-all clean build:*",
     "prepublish": "npm run build"
   },
