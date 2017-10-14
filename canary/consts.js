@@ -1,7 +1,13 @@
 import path from 'path';
 
+const parentPath = path.join(__dirname, '..');
+const parsedPath = path.parse(parentPath);
+
+/** @const {String} CANARY_ROOT - Different paths for runtime and buildtime root */
+const CANARY_ROOT = parsedPath.name === 'dist' ? path.join(parentPath, '..') : parentPath;
+
 /** @const {String} ROOT_PATH - Path where the test modules will be installed */
-export const ROOT_PATH = path.join(__dirname, '..', 'test_modules');
+export const ROOT_PATH = path.join(CANARY_ROOT, 'test_modules');
 
 /** @const {String} TEST_PATH - Path where the tests on the dependency module will be run */
 export const TEST_PATH = path.join(ROOT_PATH, 'test-dependency');
