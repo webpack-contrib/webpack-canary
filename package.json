@@ -8,11 +8,11 @@
     "squawk": "./dist/squawk/index.js"
   },
   "scripts": {
-    "test": "mocha \"./lib/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
-    "watch": "mocha \"./lib/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
-    "lint": "eslint lib",
+    "test": "mocha \"./canary/**/*.spec.js\" --compilers js:babel-core/register --check-leaks",
+    "watch": "mocha \"./canary/**/*.spec.js\" --watch --compilers js:babel-core/register --check-leaks",
+    "lint": "eslint canary",
     "squawk": "node ./squawk.js --config=squawk/webpack-canary.example.conf.js",
-    "build:canary": "babel lib/ --out-dir dist/canary",
+    "build:canary": "babel canary/ --out-dir dist/canary",
     "build:squawk": "babel squawk/ --out-dir dist/squawk",
     "clean": "[[ -d dist ]] && rm -r dist || true",
     "build": "npm-run-all clean build:*",
