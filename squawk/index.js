@@ -3,8 +3,8 @@
 import Gauge from 'gauge';
 import { has } from 'lodash';
 import { argv } from 'yargs';
-import canaryRunner from '../lib/runner';
-import { argvToOptions } from '../lib/utils';
+import canaryRunner from '../canary/runner';
+import { argvToOptions } from '../canary/utils';
 import { createRunList, generateSummary, initLogger, loadConfig, updateResultsForFailure, updateResultsForSuccess } from './utils';
 
 const options = argvToOptions(argv, 'silent');

@@ -3,8 +3,8 @@ import path from 'path';
 import chalk from 'chalk';
 import Table from 'cli-table2';
 import { cloneDeep, each, every, extend, flatten, isArray, keys, map, some, values } from 'lodash';
-import getLogger from '../lib/logger';
-import { CANARY_CONFIG_FILENAME } from '../lib/consts';
+import getLogger from '../canary/logger';
+import { CANARY_CONFIG_FILENAME } from '../canary/consts';
 
 let loggerInstance;
 
