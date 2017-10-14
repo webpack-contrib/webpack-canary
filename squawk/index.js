@@ -14,10 +14,9 @@ const logger = initLogger(options);
 /**
  * Run the squawk script
  *
- * @export
  * @return {Promise} Promise indicating the process success
  */
-export async function runner() {
+async function runner() {
   const config = loadConfig(argv);
   const startTime = new Date().getTime();
   const runList = createRunList(config);
@@ -70,11 +69,9 @@ export async function runner() {
   }
 }
 
-export default function () {
-  return runner()
-    .catch((error) => {
-      logger.error('Errors have occurred running examples');
-      logger.error(error instanceof Error ? error.err || error.message : error);
-      process.exit(1);
-    });
-}
+runner()
+  .catch((error) => {
+    logger.error('Errors have occurred running examples');
+    logger.error(error instanceof Error ? error.err || error.message : error);
+    process.exit(1);
+  });
