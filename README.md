@@ -14,6 +14,20 @@
   <p>Run dependency examples against webpack versions to detect incompatibilities.<p>
 </div>
 
+<h2 align="center">Installation</h2>
+
+```bash
+npm install --save-dev webpack-canary
+# or
+yarn add --dev webpack-canary
+```
+
+Once installed it will provide two binaries `canary` and `squawk`. Canary can be
+installed globally but it's best to install it on a project level.
+
+Another way of using the Canary is by pulling down this repo and running the
+code from it, treating it as a general Webpack testbed.
+
 <h2 align="center">Usage</h2>
 
 ### Squawk
@@ -40,10 +54,10 @@ If you have npm ignore defined, it will most likely skip the download of tests a
 
 ### CLI Interface
 
-To run a specific dependency version against a specific version of webpack, use the canary CLI interface
+To run a specific dependency version against a specific version of webpack, use the canary CLI interface.
 
 ```
-node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
+canary --webpack=<webpack_reference> --dependency=<dependency_reference>
 ```
 
  - `--webpack` can be a version or path to remote repository
@@ -59,10 +73,10 @@ node index.js --webpack=<webpack_reference> --dependency=<dependency_reference>
 
 ```
 # Published versions in registry
-node index.js --webpack=2.2 --dependency=raw-loader
+canary --webpack=2.2 --dependency=raw-loader
 
 # Development versions in remote repositories
-node index.js --webpack=webpack/webpack#master --dependency=https://github.com/alistairjcbrown/raw-loader/
+canary --webpack=webpack/webpack#master --dependency=https://github.com/alistairjcbrown/raw-loader/
 ```
 
 <h2 align="center">Compatibility</h2>
