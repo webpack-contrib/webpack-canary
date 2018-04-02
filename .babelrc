@@ -1,16 +1,48 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "current"
-      },
-      "useBuiltIns": true,
-      "exclude": [
-        "transform-regenerator"
-      ]
-    }]
+    [
+      "env",
+      {
+        "targets": {
+          "node": "current"
+        },
+        "useBuiltIns": true,
+        "exclude": [
+          "transform-regenerator"
+        ]
+      }
+    ],
+    [
+      "env",
+      {
+        "useBuiltIns": true,
+        "targets": {
+          "node": "6.9.0"
+        },
+        "exclude": [
+          "transform-async-to-generator",
+          "transform-regenerator"
+        ]
+      }
+    ]
   ],
   "plugins": [
-    "transform-async-to-generator"
-  ]
+    "transform-async-to-generator",
+    [
+      "transform-object-rest-spread",
+      {
+        "useBuiltIns": true
+      }
+    ]
+  ],
+  "env": {
+    "test": {
+      "presets": [
+        "env"
+      ],
+      "plugins": [
+        "transform-object-rest-spread"
+      ]
+    }
+  }
 }

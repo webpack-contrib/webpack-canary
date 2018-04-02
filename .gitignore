@@ -15,3 +15,11 @@
 *.log
 .idea
 .vscode
+logs
+npm-debug.log*
+.eslintcache
+/local
+/reports
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
